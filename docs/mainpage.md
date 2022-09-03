@@ -1,4 +1,4 @@
-# Piccolo OS Plus 
+# Piccolo OS Plus {#mainpage}
 Piccolo OS Plus is an extension of [Piccolo OS v1](https://github.com/garyexplains/piccolo_os_v1),
 a small multitasking OS for the Raspberry Pi Pico originally written by 
 [Gary Sims](https://github.com/garyexplains) as a teaching tool to demonstrate 
@@ -102,7 +102,7 @@ begins scheduling and running tasks. It never returns.
 
 
 ## Limitations
-Many! Piccolo OS Plus is *NOT* intended to be a full scale RTOS. (After all, there is a perfectly good free one out there!)
+Many! Piccolo OS Plus is NOT intended to be a full scale RTOS. (After all, there is a perfectly good free one out there!)
 So it doesn't have device drivers per say. There are some parts of the C libraries that are not thread safe. But most of the SDK
 will work
 and C++ will also run just fine. See more details in the `Theory of Operation` tab in the documentation.

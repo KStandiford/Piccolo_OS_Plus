@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Gary Sims
+ * Copyright (C) 2022 Keith Standiford
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -7,24 +7,43 @@
 
 #include "pico/stdlib.h"
 #include <stdio.h>
+#include "pico/malloc.h"
+#include "hardware/structs/systick.h"
+#include "hardware/exception.h"
+#include "pico/multicore.h"
+#include "piccolo_os_lock_core.h"
+#include "pico/sem.h"
+
 #include "piccolo_os.h"
 
 const uint LED_PIN = 25;
 const uint LED2_PIN = 14;
+volatile extern uint32_t tickct;
+volatile extern int32_t sleep_time;
+volatile extern int32_t sleep_core;
+volatile extern int32_t sleep_ct;
 
-void task1_func(void) {
-  piccolo_sleep_t t;
+ semaphore_t talking_stick;
+
+/*
+ * This task blinks the LED. It also holds the semaphore talking_stick
+ * while the LED is off. This is used to gate the reporter task and keep it
+ * from printing.
+ */
+void blinker(void) {
   gpio_init(LED_PIN);
   gpio_set_dir(LED_PIN, GPIO_OUT);
   while (true) {
     gpio_put(LED_PIN, 1);
-    piccolo_sleep(&t, 1000);
+    sem_release(&talking_stick);
+    piccolo_sleep(2000);
     gpio_put(LED_PIN, 0);
-    piccolo_sleep(&t, 1000);
+    sem_acquire_blocking(&talking_stick);
+    piccolo_sleep(2000);
   }
 }
-#define notprimes
-#ifndef notprimes
+
+
 int is_prime(unsigned int n)
 {
 	unsigned int p;
@@ -36,106 +55,164 @@ int is_prime(unsigned int n)
 	return 1;
 }
 
-//  Prime number computing task
+/*  
+ * Prime number computing task. Just to burn CPU time
+ * Note that it never calls piccolo_yield()
+ */
+uint32_t primes[2], totalPrimes;
+piccolo_os_task_t * reporter;
 
-void task2_func(void) {
-  piccolo_sleep_t t;
+void find_primes(void) {
   int p;
 
   printf("task2: Created!\n");
   while (1) {
-//    p = to_ms_since_boot(get_absolute_time());
-    p++;
-    if(is_prime(p)==1) {
-      printf("%d is prime!\n", p);
+    for (p=5;p;p+=2) if(is_prime(p)==1) {
+    totalPrimes++;
+    primes[get_core_num()]++;
+    // every 4096 prime numbers, send the reporter a signal
+    if(!(totalPrimes & 0xFFF)) piccolo_send_signal(reporter);
     }
-    piccolo_sleep(&t,100);
   }
 }
-#else
-
-//  test timers from SDK
-
-/// \tag::timer_example[]
-volatile bool timer_fired = false;
-
-int64_t alarm_callback(alarm_id_t id, void *user_data) {
-    printf("Timer %d fired!\n", (int) id);
-    timer_fired = true;
-    // Can return a value here in us to fire in the future
-    return 0;
-}
-
-bool repeating_timer_callback(struct repeating_timer *t) {
-    printf("Repeat at %lld\n", time_us_64());
-    return true;
-}
-
-
-void task2_func(void) {
-    piccolo_sleep_t t;
-    bool cancelled;
-
+/*
+ * Report on the progress of the prime number finder. Wait until he sends a signal
+ * Then get the "talking stick" semaphore from the LED blinker task. We can only 
+ * talk when the green light is on! Then print a report. We also report on
+ * how many tasks the garbage collector has reclaimed using a counter which
+ * is only there as a debug feature at the moment...
+ */
+extern uint32_t kills;
+void reporter_task(void){
+    printf("Reporter Started\n");
     while(1) {
-        timer_fired = false;
-        printf("Hello Timer!\n");
-
-        // Call alarm_callback in 2 seconds
-        add_alarm_in_ms(2000, alarm_callback, NULL, false);
-
-        // Wait for alarm callback to set timer_fired
-        while (!timer_fired) {
-            piccolo_yield();
-        }
-
-        // Create a repeating timer that calls repeating_timer_callback.
-        // If the delay is > 0 then this is the delay between the previous callback ending and the next starting.
-        // If the delay is negative (see below) then the next call to the callback will be exactly 500ms after the
-        // start of the call to the last callback
-        struct repeating_timer timer;
-        add_repeating_timer_ms(500, repeating_timer_callback, NULL, &timer);
-        piccolo_sleep(&t, 3000);
-        bool cancelled = cancel_repeating_timer(&timer);
-        printf("cancelled... %d\n", cancelled);
-        piccolo_sleep(&t, 2000);
-
-        // Negative delay so means we will call repeating_timer_callback, and call it again
-        // 500ms later regardless of how long the callback took to execute
-        add_repeating_timer_ms(-500, repeating_timer_callback, NULL, &timer);
-        piccolo_sleep(&t, 3000);
-        cancelled = cancel_repeating_timer(&timer);
-        printf("cancelled... %d\n", cancelled);
-        piccolo_sleep(&t, 2000);
-        printf("Done\n");
+        piccolo_get_signal_all_blocking();
+        if(!sem_acquire_timeout_ms(&talking_stick,10000)) printf("sem acquire timeout SHOULD NOT have failed\n");
+       
+        printf("Total primes %d, cores 0/1 %d/%d kills %d recycled %d bytes\n",
+            totalPrimes,primes[0], primes[1], kills, kills*sizeof(piccolo_os_task_t));
+        sem_release(&talking_stick);
     }
 }
-#endif
 
-void task3_func(void) {
-  piccolo_sleep_t t;
-  gpio_init(LED2_PIN);
-  gpio_set_dir(LED2_PIN, GPIO_OUT);
-  while (true) {
-    gpio_put(LED2_PIN, 1);
-    piccolo_sleep(&t, 75);
-    gpio_put(LED2_PIN, 0);
-    piccolo_sleep(&t, 75);
-  }
+/*
+ * The next two tasks are created periodically by the stress_tester task
+ * only to quickly delete themselves. "z" dies immediatly whicle "sz" yields
+ * once first.
+ */
+void sz(){
+    piccolo_yield();
+    return;
 }
+
+void z(){
+    int a = 1;
+    return;
+}
+
+void stress_tester(void) {
+    /**
+     * Force a slew of task create and deletes by creating lots of tasks
+     * that die very quickly. Do this every few seconds. Note that we
+     * are perfectly safe creating multiple tasks running the same function
+     * since they all have seperate stacks. 
+     * 
+     */
+    while(1) {
+        piccolo_create_task(z);
+        piccolo_create_task(z);
+        piccolo_create_task(z);
+        piccolo_create_task(sz);
+        piccolo_create_task(sz);
+        piccolo_create_task(sz);
+        piccolo_create_task(z);
+        piccolo_create_task(sz);
+        piccolo_create_task(z);
+        piccolo_create_task(sz);
+        piccolo_create_task(sz);
+
+        piccolo_sleep(3000);
+    }
+}
+
+
+void spinner2(void){
+    while(!piccolo_get_signal()) piccolo_yield();   // spin until we get a signal
+    piccolo_get_signal_blocking();                  // hang until we get a second one
+    return;                                         // and exit
+}
+void spinner(){
+    int i;
+    absolute_time_t start;
+    uint64_t time;
+    piccolo_os_task_t *spin1, *spin2;
+#define loops 1000
+
+    start = get_absolute_time();
+    for(i=0;i<loops;i++) piccolo_yield();
+    time = absolute_time_diff_us(start,get_absolute_time());
+    printf("\n   One task spinning takes %lld nanoseconds\n",time);
+
+    spin1 = piccolo_create_task(spinner2);
+    piccolo_yield();
+    start = get_absolute_time();
+    for(i=0;i<loops;i++) piccolo_yield();
+    time = absolute_time_diff_us(start,get_absolute_time());
+    printf("  Two tasks spinning takes %lld nanoseconds\n",time);
+
+    spin2 = piccolo_create_task(spinner2);
+    piccolo_yield();
+    start = get_absolute_time();
+    for(i=0;i<loops;i++) piccolo_yield();
+    time = absolute_time_diff_us(start,get_absolute_time());
+    printf("Three tasks spinning takes %lld nanoseconds\n",time);
+
+    piccolo_send_signal(spin1);
+    piccolo_send_signal(spin2);
+    piccolo_yield();
+    start = get_absolute_time();
+    for(i=0;i<loops;i++) piccolo_yield();
+    time = absolute_time_diff_us(start,get_absolute_time());
+    printf("Two blocked spinning takes %lld nanoseconds\n",time);
+
+    piccolo_send_signal(spin1);
+    piccolo_yield();
+    piccolo_yield();
+    start = get_absolute_time();
+    for(i=0;i<loops;i++) piccolo_yield();
+    time = absolute_time_diff_us(start,get_absolute_time());
+    printf("One blocked spinning takes %lld nanoseconds\n\n",time);
+
+    piccolo_send_signal(spin2);
+
+    //start the LED blinker
+    piccolo_create_task(blinker);
+    printf("Start the prime finder, his reporter and the stress tester, and then depart!\n");
+    piccolo_create_task(stress_tester);
+    reporter = piccolo_create_task(reporter_task);
+    piccolo_create_task(find_primes);
+}
+
 
 int main() {
     stdio_init_all();
-    printf("Hello World!");
-  sleep_ms(5000);  // pause to give user a chance to start putty
-  piccolo_init();
+    piccolo_init();
 
-  printf("PICCOLO OS Demo Starting...\n");
 
-  piccolo_create_task(&task1_func);
-  piccolo_create_task(&task2_func);
-  piccolo_create_task(&task3_func);
+    sleep_ms(5000);  // pause to give user a chance to start putty
 
-  piccolo_start();
+    printf("Hello World!\n");
+
+    // initialize the semaphore 
+    sem_init(&talking_stick,1,1);
+
+    // test a few things for timing first
+    // the spinner task will start everything else ...
+    piccolo_create_task(spinner);
+
+    printf("PICCOLO OS Demo Starting...\n");
+    // and begin!
+    piccolo_start();
 
   return 0; /* Never gonna happen */
 }

@@ -10,25 +10,33 @@ set(CMAKE_CXX_STANDARD 17)
 set(PICO_SDK_PATH $ENV{PICO_SDK_PATH})
 
 # Pull in Pico SDK (must be before project)
-include(pico_sdk_import.cmake)
+include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
-project(piccolo_os_demo C CXX ASM)
+project(
+    piccolo_os_plus_demo
+    VERSION 1.0
+    DESCRIPTION "A demonstration of Piccolo OS Plus"
+    LANGUAGES C CXX ASM)
 
+list(APPEND PICO_CONFIG_HEADER_FILES ${PROJECT_SOURCE_DIR}/piccolo_os_lock_core.h)
 # Initialise the Pico SDK
 pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(piccolo_os_demo piccolo_os_demo.c context_switch.s piccolo_os.c)
+add_executable(${PROJECT_NAME} piccolo_os_demo.c context_switch.s piccolo_os.c piccolo_os.h 
+piccolo_os_lock_core.c piccolo_os_lock_core.h)
 
-pico_set_program_name(piccolo_os_demo "piccolo_os_demo")
-pico_set_program_version(piccolo_os_demo "0.1")
+#pico_set_binary_type(${PROJECT_NAME} no_flash)
 
-pico_enable_stdio_uart(piccolo_os_demo 1)
-pico_enable_stdio_usb(piccolo_os_demo 0)
+pico_add_extra_outputs(${PROJECT_NAME})
 
 # Add the standard library to the build
-target_link_libraries(piccolo_os_demo pico_stdlib)
+target_link_libraries(${PROJECT_NAME} pico_stdlib pico_malloc hardware_exception hardware_sync
+    pico_multicore )
 
-pico_add_extra_outputs(piccolo_os_demo)
 
+pico_enable_stdio_uart(${PROJECT_NAME} 1)
+pico_enable_stdio_usb(${PROJECT_NAME} 0)
+
+add_subdirectory( "${PROJECT_SOURCE_DIR}/docs")

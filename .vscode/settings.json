@@ -1,5 +1,27 @@
 {
+    // These settings tweaks to the cmake plugin will ensure
+    // that you debug using cortex-debug instead of trying to launch
+    // a Pico binary on the host
+    "cmake.statusbar.advanced": {
+        "debug": {
+            "visibility": "hidden"
+        },
+        "launch": {
+            "visibility": "hidden"
+        },
+        "build": {
+            "visibility": "default"
+        },
+        "buildTarget": {
+            "visibility": "hidden"
+        }
+    },
+    "cmake.buildBeforeRun": false,
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "cortex-debug.openocdPath": "C:\\VSARM\\OpenOCD-20211118-0.11.0\\bin\\openocd.exe",
+    "cortex-debug.variableUseNaturalFormat": false,
+    "cortex-debug.registerUseNaturalFormat": true,
     "files.associations": {
-        "stdlib.h": "c"
+        "mpu.h": "c"
     }
 }

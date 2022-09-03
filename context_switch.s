@@ -1,4 +1,5 @@
 /*
+ * Copyright (C) 2022 Keith Standiford
  * Copyright (C) 2021 Gary Sims
  * All rights reserved.
  * 
@@ -11,10 +12,12 @@
  
 .thumb
 .syntax unified
+.data
 
-.type isr_svcall, %function
-.global isr_svcall
-isr_svcall:
+
+.type __isr_SVCALL, %function
+.global __isr_SVCALL
+__isr_SVCALL:
 	mrs r0, psp
 
     /* Save r4, r5, r6, r7, and lr first
@@ -65,6 +68,8 @@ isr_svcall:
 
     pop {pc}
 
+.type __piccolo_pre_switch,%function
+.thumb_func
 .global __piccolo_pre_switch
 __piccolo_pre_switch:
 	/* save kernel state */
@@ -120,6 +125,8 @@ __piccolo_pre_switch:
 	/* jump to user task */
 	bx lr
 
+.type __piccolo_task_init_stack,%function
+.thumb_func
 .global __piccolo_task_init_stack
 __piccolo_task_init_stack:
 	/* save kernel state */
@@ -155,9 +162,15 @@ __piccolo_task_init_stack:
 	/* intentionally continue down into piccolo_syscall */
 	/* same as bl piccolo_syscall, if the code wasn't below */
 
+/* 
+.type piccolo_yield,%function
+.thumb_func
 .global piccolo_yield
-.global piccolo_syscall
 piccolo_yield:
+*/
+.type piccolo_syscall,%function
+.thumb_func
+.global piccolo_syscall
 piccolo_syscall:
     nop
 	svc 0
