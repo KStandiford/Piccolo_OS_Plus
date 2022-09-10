@@ -36,8 +36,8 @@ __force_inline static uint32_t get_interrupts_disabled(void) {
  * 
  * @return lock_owner_id_t Task ID to use as lock owner
  * 
- * If piccolo_os is *not* started (start hasn't yet been called), return the
- * core number. Otherwise, return the task ID of the running task. Piccolo_init
+ * If piccolo_os is *not* started (`piccolo_start()` hasn't yet been called), return the
+ * core number. Otherwise, return the task ID of the running task. `Piccolo_init()`
  * sets these to the core number as well, since even if the scheduler is running
  * it *may not* have yet selected a task to run.
  */
@@ -54,7 +54,7 @@ lock_owner_id_t __time_critical_func(piccolo_lock_get_owner_id)(){
 }
 
 /**
- * @brief Yield if a valid task is running, and then return
+ * @brief If a valid task is running, yield. Then return
  * 
  * Remember the SDK caller checks anyway, so if we don't have a valid task running
  * we will just return (and we will spin in a loop with the SDK).
@@ -66,7 +66,7 @@ void __time_critical_func(piccolo_lock_wait)(void) {
 }
 
 /**
- * @brief Yield if a valid task is running, then return the timeout status.
+ * @brief If a valid task is running, yield. Then return the timeout status.
  * 
  * @param timeout_timestamp 
  * @return true if the timeout has expired
@@ -81,7 +81,7 @@ bool __time_critical_func(piccolo_lock_wait_until)(absolute_time_t timeout_times
 }
 
 /**
- * @brief Default idle routine for the lock system. We will yield if a valid task is running.
+ * @brief Default idle routine for the lock system. If a valid task is running, yield. Then return.
  * 
  */
 void __time_critical_func(piccolo_lock_yield)(void) {

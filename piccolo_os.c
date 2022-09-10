@@ -2,7 +2,7 @@
  * @file piccolo_os.c
  * @author Keith Standiford
  * @brief Piccolo OS Plus
- * @version 1.0
+ * @version 1.01
  * @date 2022-08-15
  * 
  *
@@ -52,10 +52,6 @@ void __piccolo_start_core1(void);
 piccolo_os_internals_t piccolo_ctx;
 
 
-/** @defgroup Intern The Piccolo Plus Internals
- * 
- * @{
- */
 
 /**
  * @brief Get the ID (task struct address) of the running task
@@ -91,12 +87,12 @@ piccolo_os_task_t* piccolo_get_task_id(){
  * @param starting_argument unsigned integer argument for function
  * 
  * @returns "Current" stack pointer for the task.
- * 
+ * \ingroup Intern
  * We setup the initial stack frame with:
  *  - "software saved" LR set to PICCOLO_OS_THREAD_PSP so that exception return
  * works correctly. 
  *  - PC Set to the task starting point (function entry)
- *  - Exception frame LR set to `piccolo_end_task` for when task returns
+ *  - Exception frame LR set to `piccolo_end_task()` in case the task exits or returns
  * 
  * PICCOLO_OS_THREAD_PSP means: 
  *  - Return to Thread mode.
@@ -203,15 +199,13 @@ piccolo_os_task_t* piccolo_create_task(void (*pointer_to_task_function)(void)) {
 }
 
 /**
- * @brief Ends the current task
+ * @brief Ends the current task, never returns
  * 
- * @returns Never! 
- * 
- * Marks the current task as dead (ZOMBIE) so the scheduler can remove it.
+ * Marks the current task as dead (ZOMBIE) and yields, so the scheduler can remove it.
  * (The scheduler must do this, since we cannot free the memory for a task
- * while it running!). The scheduler will immediately remove ZOMBIE tasks
- * from the scheduler chain and add them to the zombies list for the garbage
- * collector to return to free memory.
+ * while it is running!). The scheduler will immediately remove a ZOMBIE task
+ * from the scheduler chain, add it to the zombies list and signal the garbage
+ * collector to return the task space to free memory.
  * 
  * @note A task that executes a `return` will also be ended.
  */
@@ -220,23 +214,24 @@ void piccolo_end_task(void){
     piccolo_os_task_t * task;
     uint32_t lock = spin_lock_blocking(piccolo_ctx.piccolo_lock);
     task = piccolo_get_task_id();
-    task->task_flags |= PICCOLO_TASK_ZOMBIE | PICCOLO_TASK_BLOCKED;    // marked for death...
+    task->task_flags |= PICCOLO_TASK_ZOMBIE;    // marked for death...
     spin_unlock(piccolo_ctx.piccolo_lock,lock);
     while(1) piccolo_yield();
+    return;                 // just to turn of doxygen warning!
 }
 
 /**
  * @brief sleeps for a specified number of milliseconds
  * 
- * @param ticks number of milliseconds to sleep;
+ * @param sleep_time_ms number of milliseconds to sleep;
  * 
  * The scheduler marks the task as blocked and suspends its execution 
  * until the delay has expired.
  */
-void piccolo_sleep(uint32_t ticks) {
+void piccolo_sleep(uint32_t sleep_time_ms) {
     piccolo_os_task_t *task;
     
-    piccolo_sleep_until( make_timeout_time_ms(ticks));
+    piccolo_sleep_until( make_timeout_time_ms(sleep_time_ms));
     return;
 }
 
@@ -265,7 +260,7 @@ void piccolo_sleep_until(absolute_time_t until) {
 
     task = piccolo_get_task_id();
     task->wakeup = until;
-    task->task_flags |= PICCOLO_TASK_BLOCKED | PICCOLO_TASK_SLEEPING;
+    task->task_flags |= PICCOLO_TASK_SLEEPING;
     piccolo_yield();  
 }
 /**
@@ -275,7 +270,7 @@ void piccolo_sleep_until(absolute_time_t until) {
  * @param block true if blocking on send
  * @param timeout_ms non zero if timeout enabled on blocking
  * @return 1 if signal sent. <0 if no room, or timeout occurred on blocking
- * 
+ * \ingroup Intern
  * Send a signal to the designated task. If there is space the signal is sent.
  * If there is no room for the signal, return the error unless blocking was requested.
  * If blocking is necessary, start a timeout as well, if one was requested.
@@ -301,7 +296,7 @@ int32_t __piccolo_send_signal(piccolo_os_task_t* task,bool block, uint32_t timeo
 
                 // set time out and blocking flags
                 owntask->wakeup = delayed_by_ms(get_absolute_time(),timeout_ms);
-                owntask->task_flags |= (PICCOLO_TASK_BLOCKED |
+                owntask->task_flags |= (
                     ((timeout_ms)? PICCOLO_TASK_SLEEPING:0) | PICCOLO_TASK_SEND_SIGNAL_BLOCKED);
                 flags = owntask->task_flags;
                 owntask->task_sending_to = task;
@@ -310,8 +305,7 @@ int32_t __piccolo_send_signal(piccolo_os_task_t* task,bool block, uint32_t timeo
                 spin_unlock(piccolo_ctx.piccolo_lock,lock);
                 piccolo_yield();
 
-                // clear the flags. Repeat the loop one more time
-                owntask->task_flags &= ~(PICCOLO_TASK_SEND_SIGNAL_BLOCKED | PICCOLO_TASK_SLEEPING);
+                // Repeat the loop one more time
                 continue;
             }
         } else {
@@ -353,7 +347,7 @@ inline int32_t piccolo_send_signal_blocking(piccolo_os_task_t* toTask) {
     return __piccolo_send_signal(toTask,true, 0);
 };
 /**
- * @brief Send a signal to a specified task. Block with a timeout if the channel is full.
+ * @brief Send a signal to a specified task. If the channel is full, block with a timeout until it is not.
  * 
  * @param toTask pointer to task to send to
  * @param timeout_ms maximum time in ms to wait if the channel is full.
@@ -374,7 +368,7 @@ inline int32_t piccolo_send_signal_blocking_timeout(piccolo_os_task_t* toTask,ui
  * @param timeout_ms non zero if timeout enabled on blocking
  * @param get_all if true, get ALL signal available. Otherwise just get one. 
  * @return Number of signals received. Can be zero on timeout or non-blocking
- * 
+ * \ingroup Intern
  * Get a signal for the current task. Return the number received.
  * If there are no signals available, return zero unless blocking was requested.
  * If blocking is necessary, start a timeout as well if one was requested.
@@ -398,13 +392,12 @@ int32_t __piccolo_get_signal(bool block, uint32_t timeout_ms, bool get_all){
 
                 // set time out and blocking flags
                 task->wakeup = delayed_by_ms(get_absolute_time(),timeout_ms);
-                task->task_flags |= (PICCOLO_TASK_BLOCKED | 
+                task->task_flags |= ( 
                     PICCOLO_TASK_GET_SIGNAL_BLOCKED | ((timeout_ms)? PICCOLO_TASK_SLEEPING:0));
-                // yield with flags set
-                piccolo_yield();
+                // yield with flags set. This will block
+                piccolo_yield(); 
 
-                // clear the flags. Repeat the loop one more time
-                task->task_flags &= ~(PICCOLO_TASK_GET_SIGNAL_BLOCKED | PICCOLO_TASK_SLEEPING);
+                // Repeat the loop one more time
                 continue;
             }
         } else {
@@ -434,8 +427,19 @@ int32_t __piccolo_get_signal(bool block, uint32_t timeout_ms, bool get_all){
  * @return 1 if signal received, 0 if none were available
  * 
  */
+// We optimize this one since it doesn't block or timeout
 inline int32_t piccolo_get_signal() {
-    return __piccolo_get_signal(false,0,false);
+    piccolo_os_task_t* task;
+    uint32_t i;
+
+    task = piccolo_get_task_id();
+    // in == out is empty
+    if(task->signal_in == task->signal_out) return 0;
+    // increment out, but never set it >= limit ...
+    if((i=task->signal_out++) >= task->signal_limit) i = 0;
+    task->signal_out = i;
+    // return success
+    return 1;
 }
 
 /**
@@ -448,7 +452,7 @@ inline int32_t piccolo_get_signal_blocking() {
     return __piccolo_get_signal(true, 0, false);
 }
 /**
- * @brief Attempt to get a signal. Block with a timeout until one arrives if there were none.
+ * @brief Attempt to get a signal. If none were available, block with a timeout until one arrives.
  * 
  * @param timeout_ms non zero if timeout enabled on blocking
  * @return Number of signals received. Will be zero is timeout occurred.
@@ -463,7 +467,7 @@ inline int32_t piccolo_get_signal_blocking_timeout(uint32_t timeout_ms){
  * 
  * @return Number of signals received, 0 if none were available
  * 
- * Empties the signal channel if signals were available or received in time.
+ * Empties the signal channel if signals were available.
  * 
  */
 inline int32_t piccolo_get_signal_all(){
@@ -471,7 +475,7 @@ inline int32_t piccolo_get_signal_all(){
 }
 
 /**
- * @brief Get all the signals available. Block until one arrives if there were none.
+ * @brief Get all the signals available. If none were available, block until one arrives.
  * 
  * @return Number of signals received
  * 
@@ -482,7 +486,7 @@ inline int32_t piccolo_get_signal_all_blocking(){
     return __piccolo_get_signal(true, 0, true);
 }
 /**
- * @brief Get all the signals available. Block with a timeout until one arrives if there were none.
+ * @brief Get all the signals available. If none were available, block with a timeout until one arrives.
  * 
  * @param timeout_ms Time in ms to wait for a signal to arrive
  * 
@@ -500,6 +504,7 @@ uint32_t kills = 0;
 /**
  * @brief Task to delete dead tasks.
  * 
+ * \ingroup Intern
  * The task is created during the scheduler start-up on core 0.
  * When it runs, it tries to free the space for all the dead tasks on 
  * the zombies list. (The scheduler cannot call free, because it
@@ -528,7 +533,8 @@ void __piccolo_garbage_man(void) {
 /**
  * @brief Switch the scheduler to handler mode
  * 
- * After a reset, processor is in thread mode
+ * \ingroup Intern
+ * After a reset, the processor is in thread mode. 
  * Switch to handler mode, so that the Piccolo OS kernel runs in handler mode,
  * and to ensure the correct return from an exception/interrupt later
  * when switching to a task. We make a dummy stack and arrange to route the
@@ -589,13 +595,14 @@ void piccolo_init() {
  * @brief Internal Idle "task" used by the scheduler to sleep the core
  * 
  * @param uSec the number of microseconds to sleep
- * 
+ * \ingroup Intern
  * Enter sleep mode and then "yield" back to the scheduler. Entry and parameter passing
- * is set up in the dummy stack frame before switching context.
+ * is set up in a dummy stack frame before switching context.
+ * 
+ * \note Can be running on **both** cores with different sleep times
  * 
  */
-/// \cond dont_document_attribute 
-__attribute__ ((noinline)) /** \endcond **/void __piccolo_idle( int32_t uSec)  {
+__attribute__ ((noinline)) void __piccolo_idle( int32_t uSec)  {
     do {
         if(uSec>= 0) sleep_us(uSec);
         piccolo_yield();            // This should never return!
@@ -603,10 +610,12 @@ __attribute__ ((noinline)) /** \endcond **/void __piccolo_idle( int32_t uSec)  {
 }
 
 /**
- * @brief Core 1 code to initialize and immediately start piccolo scheduler
+ * @brief Core 1 code to initialize and immediately start the piccolo scheduler
+ * \ingroup Intern
  * 
- * Remember that the piccolo init checks the core number and does not
+ * Remember that the `piccolo_init()` checks the core number and does not
  * setup the data structures or the interrupt vector table if it is not core 0.
+ * `piccolo_start()` takes similar precautions.
  * The scheduler should run fine on both cores at once.
  * 
  */
@@ -618,8 +627,9 @@ void __piccolo_start_core1(void) {
     return;   // never happens
 }
 
+
 /**
- * @brief Start the Piccolo Task scheduler in handler mode
+ * @brief Start the Piccolo Task scheduler
  * 
  * @returns Never!
  * 
@@ -630,13 +640,19 @@ void __piccolo_start_core1(void) {
  * and looks for a task which is not running (on the other core) and not blocked. Along the way it checks
  * if sleeping tasks or tasks blocked for signaling should be unblocked. The first task found ready to run, gets run
  * with the preemption timer reset and armed if preemption is enabled. After the task runs the
- * scheduler checks if it has ended. (Marked as a zombie.) If so, It is
- * removed from the schedulers task list and sent to the garbage collector to free the task's memory.
+ * scheduler checks if it has ended. (Marked as a zombie.) If so, the task is
+ * removed from the scheduler's task list and sent to the garbage collector to free the task's memory.
  * 
- * If no task is ready to run an idle task will be started to sleep for the minimum of the idle
- * slice time or the smallest time remaining of any timeout. Sleep is the Pico sleep
- * routine, so the core goes to sleep for power reduction. If the idle slice time is set to zero, 
- * idle will not run.
+ * If no task is ready to run an idle task will be started to sleep for the minimum of \ref PICCOLO_OS_MAX_IDLE
+ * or the smallest time remaining of any timeout. Sleep is the Pico sleep
+ * routine, so the core goes to sleep for power reduction. If \ref PICCOLO_OS_MAX_IDLE is set to zero, 
+ * idle will not run. 
+ * 
+ * If \ref PICCOLO_OS_NO_IDLE_FOR_SIGNALS is true (the default), the idle task *will not* be run if *any* task is blocked
+ * waiting to send or receive a signal in order to minimize system response time.
+ * Setting \ref PICCOLO_OS_NO_IDLE_FOR_SIGNALS to false will improve power consumption but potentially delay the response
+ * of any task waiting for a signal. This may make good sense for low power applications without
+ * serious response time concerns.
  * 
  * @note Runs on **both** cores if multi-core is enabled
  * 
@@ -724,13 +740,13 @@ void __time_critical_func(piccolo_start)() {
             current_flags = current_task->task_flags;
             if (current_flags & PICCOLO_TASK_RUNNING) continue; // the other core is running it, skip it
 
-            if(current_flags & PICCOLO_TASK_BLOCKED) {  // Is it blocked?
+            if(current_flags & PICCOLO_TASK_BLOCKING) {  // Is any blocking flag set?
                 //  Is there a task timer running?
                 if(current_flags & PICCOLO_TASK_SLEEPING) {
                     time_to_wait = absolute_time_diff_us(get_absolute_time(),current_task->wakeup);
                     if(time_to_wait <=0) { // Has timer hit now?
                         // Time to wake up. clear sleeping and blocked
-                        current_flags &= ~(PICCOLO_TASK_SLEEPING | PICCOLO_TASK_BLOCKED);
+                        current_flags = 0;
                         current_task->task_flags = current_flags;
                     }
                     else {
@@ -741,22 +757,28 @@ void __time_critical_func(piccolo_start)() {
 
                 //  Is it blocked waiting for a signal?
                 if(current_flags & PICCOLO_TASK_GET_SIGNAL_BLOCKED) {
+#if PICCOLO_OS_NO_IDLE_FOR_SIGNALS
+                    minimum_wait = 0;
+#endif
                     // is there data?
                     if(current_task->signal_in != current_task->signal_out) { //in=out => empty
                         // YES, clear block flags and run it
-                        current_flags &= ~(PICCOLO_TASK_GET_SIGNAL_BLOCKED | PICCOLO_TASK_BLOCKED);
+                        current_flags = 0;
                         current_task->task_flags = current_flags;
                     }
                 } else {
 
                     //  Or is it blocked waiting to send a signal? (Can't be both)
                     if(current_flags & PICCOLO_TASK_SEND_SIGNAL_BLOCKED) {
+#if PICCOLO_OS_NO_IDLE_FOR_SIGNALS
+                        minimum_wait = 0;
+#endif
                         // is there room for data?
                         if(((current_task->task_sending_to->signal_in+1 == 
                             current_task->task_sending_to->signal_limit)?0:current_task->task_sending_to->signal_in+1 )
                             != current_task->task_sending_to->signal_out) { //((in+1)%limit == out)=>full
                             // Yes, clear blocks and run it
-                            current_flags &= ~(PICCOLO_TASK_SEND_SIGNAL_BLOCKED | PICCOLO_TASK_BLOCKED);
+                            current_flags = 0;
                             current_task->task_flags = current_flags;
                         }
                     }
@@ -764,12 +786,12 @@ void __time_critical_func(piccolo_start)() {
             }
 
             //  It the task ready to run?
-            if (!(current_flags & PICCOLO_TASK_BLOCKED)) {
+            if (!(current_flags)) {
                 /*
                  * We found a ready task not already running. Mark it running
                  * Set idle to false, and break the search loop
                  */
-                current_task->task_flags |= PICCOLO_TASK_RUNNING;
+                current_task->task_flags = PICCOLO_TASK_RUNNING;
                 piccolo_ctx.current_task = current_task;    // start other schedulers looking in right spot
                 piccolo_ctx.this_task[get_core_num()] = current_task;   // so we can find who we are at run time
                 idle = false;
@@ -787,7 +809,8 @@ void __time_critical_func(piccolo_start)() {
          * Remember that a timer or an IRQ can unblock a task by signaling. This implies that the 
          * system may not respond for one PICCOLO_OS_MAX_IDLE slice time.
          */
-        if(idle && PICCOLO_OS_MAX_IDLE) {
+        if(!idle) break;
+        else if( minimum_wait) {
             __piccolo_pre_switch(__piccolo_os_create_task(
                     (Idle_Stack + Idle_Stack_Size),(void (*)(void)) __piccolo_idle,(uint32_t) minimum_wait));
         }
@@ -844,5 +867,5 @@ void __time_critical_func(piccolo_start)() {
     else current_task->task_flags &= ~PICCOLO_TASK_RUNNING;
 
   }
+  return; // shuts doxygen up about no return...
 }
- /**@} */

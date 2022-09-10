@@ -18,7 +18,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Piccolo OS Plus<span id="projectnumber">&#160;1.0</span>
+   <div id="projectname">Piccolo OS Plus<span id="projectnumber">&#160;1.01</span>
    </div>
    <div id="projectbrief">A feature rich extension of Piccolo OS</div>
   </td>
@@ -69,10 +69,10 @@ $(function() {
 <div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span><span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
 <div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><a class="code hl_define" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a> <a class="code hl_function" href="group___s_d_k.html#gaaa66c26838876a9e54bcae8da590e963">piccolo_lock_get_owner_id</a>();</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">void</span> <a class="code hl_function" href="group___s_d_k.html#gae560cc4102ef37067af304fad1266209">piccolo_lock_wait</a>();</div>
-<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keywordtype">bool</span> <a class="code hl_function" href="group___s_d_k.html#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">piccolo_lock_wait_until</a>(absolute_time_t timeout_timestamp);</div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keywordtype">void</span> <a class="code hl_function" href="group___s_d_k.html#ga26aa19be67673d59f6de635795f98716">piccolo_lock_yield</a>();</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span><a class="code hl_define" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a> <a class="code hl_function" href="group___s_d_k.html#ga7c507be20308815bb5f772e7c0d0bac1">piccolo_lock_get_owner_id</a>();</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span><span class="keywordtype">void</span> <a class="code hl_function" href="group___s_d_k.html#ga2bc894698aed7f6f0d27d684c32f0032">piccolo_lock_wait</a>();</div>
+<div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span><span class="keywordtype">bool</span> <a class="code hl_function" href="group___s_d_k.html#gabccb1b699dc1256a935a2d46ba2ce6a3">piccolo_lock_wait_until</a>(absolute_time_t timeout_timestamp);</div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="keywordtype">void</span> <a class="code hl_function" href="group___s_d_k.html#ga40d406f000def8d7b67bb29835a8e129">piccolo_lock_yield</a>();</div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span> </div>
 <div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span><span class="preprocessor">#ifdef __cplusplus</span></div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>}</div>
@@ -100,10 +100,10 @@ $(function() {
 <div class="line"><a id="l00166" name="l00166"></a><span class="lineno">  166</span><span class="preprocessor">#endif</span></div>
 <div class="line"><a id="l00167" name="l00167"></a><span class="lineno">  167</span> </div>
 <div class="line"><a id="l00170" name="l00170"></a><span class="lineno">  170</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="agroup___s_d_k_html_ga26aa19be67673d59f6de635795f98716"><div class="ttname"><a href="group___s_d_k.html#ga26aa19be67673d59f6de635795f98716">piccolo_lock_yield</a></div><div class="ttdeci">void piccolo_lock_yield()</div><div class="ttdoc">Default idle routine for the lock system. We will yield if a valid task is running.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:87</div></div>
-<div class="ttc" id="agroup___s_d_k_html_ga7cf7b6b5d47c5ad95e4233d24b3e1c53"><div class="ttname"><a href="group___s_d_k.html#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">piccolo_lock_wait_until</a></div><div class="ttdeci">bool piccolo_lock_wait_until(absolute_time_t timeout_timestamp)</div><div class="ttdoc">Yield if a valid task is running, then return the timeout status.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:78</div></div>
-<div class="ttc" id="agroup___s_d_k_html_gaaa66c26838876a9e54bcae8da590e963"><div class="ttname"><a href="group___s_d_k.html#gaaa66c26838876a9e54bcae8da590e963">piccolo_lock_get_owner_id</a></div><div class="ttdeci">lock_owner_id_t piccolo_lock_get_owner_id()</div><div class="ttdoc">Get the ID (task struct address) of the running task.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:44</div></div>
-<div class="ttc" id="agroup___s_d_k_html_gae560cc4102ef37067af304fad1266209"><div class="ttname"><a href="group___s_d_k.html#gae560cc4102ef37067af304fad1266209">piccolo_lock_wait</a></div><div class="ttdeci">void piccolo_lock_wait()</div><div class="ttdoc">Yield if a valid task is running, and then return.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:63</div></div>
+<div class="ttc" id="agroup___s_d_k_html_ga2bc894698aed7f6f0d27d684c32f0032"><div class="ttname"><a href="group___s_d_k.html#ga2bc894698aed7f6f0d27d684c32f0032">piccolo_lock_wait</a></div><div class="ttdeci">void piccolo_lock_wait()</div><div class="ttdoc">If a valid task is running, yield. Then return.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:63</div></div>
+<div class="ttc" id="agroup___s_d_k_html_ga40d406f000def8d7b67bb29835a8e129"><div class="ttname"><a href="group___s_d_k.html#ga40d406f000def8d7b67bb29835a8e129">piccolo_lock_yield</a></div><div class="ttdeci">void piccolo_lock_yield()</div><div class="ttdoc">Default idle routine for the lock system. If a valid task is running, yield. Then return.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:87</div></div>
+<div class="ttc" id="agroup___s_d_k_html_ga7c507be20308815bb5f772e7c0d0bac1"><div class="ttname"><a href="group___s_d_k.html#ga7c507be20308815bb5f772e7c0d0bac1">piccolo_lock_get_owner_id</a></div><div class="ttdeci">lock_owner_id_t piccolo_lock_get_owner_id()</div><div class="ttdoc">Get the ID (task struct address) of the running task.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:44</div></div>
+<div class="ttc" id="agroup___s_d_k_html_gabccb1b699dc1256a935a2d46ba2ce6a3"><div class="ttname"><a href="group___s_d_k.html#gabccb1b699dc1256a935a2d46ba2ce6a3">piccolo_lock_wait_until</a></div><div class="ttdeci">bool piccolo_lock_wait_until(absolute_time_t timeout_timestamp)</div><div class="ttdoc">If a valid task is running, yield. Then return the timeout status.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:78</div></div>
 <div class="ttc" id="apiccolo__os__lock__core_8h_html_a7e5b614312aabaada704b6a2350d39bc"><div class="ttname"><a href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a></div><div class="ttdeci">#define lock_owner_id_t</div><div class="ttdoc">type to use to store the 'owner' of a lock.By default this is int8_t as it only needs to store the co...</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.h:37</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->

@@ -137,57 +137,83 @@ void stress_tester(void) {
 
 
 void spinner2(void){
+    piccolo_os_task_t * task;
+    task = piccolo_get_task_id();
     while(!piccolo_get_signal()) piccolo_yield();   // spin until we get a signal
     piccolo_get_signal_blocking();                  // hang until we get a second one
+//    printf(" signal hang2 task %8X in %d out %d limit %d\n",task,task->signal_in,task->signal_out,task->signal_limit);
+    piccolo_get_signal_blocking();                  // hang until we get a third one
+//    printf(" semaphore hang task %8X in %d out %d limit %d\n",task,task->signal_in,task->signal_out,task->signal_limit);
+    sem_acquire_blocking(&talking_stick);           // then hang on the semaphore
+//    printf(" semaphore exit task %8X in %d out %d limit %d\n",task,task->signal_in,task->signal_out,task->signal_limit);
     return;                                         // and exit
 }
 void spinner(){
-    int i;
+    int i,yielding=1,blocking=1, semaphore;
     absolute_time_t start;
     uint64_t time;
     piccolo_os_task_t *spin1, *spin2;
 #define loops 1000
-
+    piccolo_sleep(10);
     start = get_absolute_time();
     for(i=0;i<loops;i++) piccolo_yield();
     time = absolute_time_diff_us(start,get_absolute_time());
-    printf("\n   One task spinning takes %lld nanoseconds\n",time);
+    printf("\n");
+    printf("Yielding:%3d  Blocking:%3d Takes %6lld nanoseconds\n",yielding,blocking,time);
 
     spin1 = piccolo_create_task(spinner2);
-    piccolo_yield();
+    yielding++;
+    piccolo_sleep(10);
     start = get_absolute_time();
     for(i=0;i<loops;i++) piccolo_yield();
     time = absolute_time_diff_us(start,get_absolute_time());
-    printf("  Two tasks spinning takes %lld nanoseconds\n",time);
+    printf("Yielding:%3d  Blocking:%3d Takes %6lld nanoseconds\n",yielding,blocking,time);
 
     spin2 = piccolo_create_task(spinner2);
-    piccolo_yield();
+    yielding++;
+    piccolo_sleep(10);
     start = get_absolute_time();
     for(i=0;i<loops;i++) piccolo_yield();
     time = absolute_time_diff_us(start,get_absolute_time());
-    printf("Three tasks spinning takes %lld nanoseconds\n",time);
+    printf("Yielding:%3d  Blocking:%3d Takes %6lld nanoseconds\n",yielding,blocking,time);
 
     piccolo_send_signal(spin1);
-    piccolo_send_signal(spin2);
-    piccolo_yield();
+    piccolo_send_signal(spin2);     // send them both to signal blocking
+    yielding -=2;
+    blocking +=2;
+    piccolo_sleep(2000);
     start = get_absolute_time();
     for(i=0;i<loops;i++) piccolo_yield();
     time = absolute_time_diff_us(start,get_absolute_time());
-    printf("Two blocked spinning takes %lld nanoseconds\n",time);
+    printf("Yielding:%3d  Blocking:%3d Takes %6lld nanoseconds\n",yielding,blocking,time);
 
+    sem_try_acquire(&talking_stick);           // Eat the permit that should be there
     piccolo_send_signal(spin1);
-    piccolo_yield();
-    piccolo_yield();
+    piccolo_send_signal(spin2);     // send them both to semaphores
+    yielding = 1;
+    blocking = 1;
+    semaphore = 2;
+    piccolo_sleep(2000);
     start = get_absolute_time();
     for(i=0;i<loops;i++) piccolo_yield();
     time = absolute_time_diff_us(start,get_absolute_time());
-    printf("One blocked spinning takes %lld nanoseconds\n\n",time);
+    printf("Yielding:%3d  Blocking:%3d On Semaphore:%3d Takes %6lld nanoseconds\n",yielding,blocking,semaphore, time);
 
-    piccolo_send_signal(spin2);
+    sem_release(&talking_stick);    // one of them will die
+    semaphore--;
+    piccolo_sleep(2000);
+    start = get_absolute_time();
+    for(i=0;i<loops;i++) piccolo_yield();
+    time = absolute_time_diff_us(start,get_absolute_time());
+    printf("Yielding:%3d  Blocking:%3d On Semaphore:%3d Takes %6lld nanoseconds\n",yielding,blocking,semaphore, time);
+
+    sem_release(&talking_stick);    // one of them will die
+    piccolo_sleep(20);
+    sem_release(&talking_stick);    // replace the permit
 
     //start the LED blinker
     piccolo_create_task(blinker);
-    printf("Start the prime finder, his reporter and the stress tester, and then depart!\n");
+    printf("\nStart the prime finder, his reporter and the stress tester, and then depart!\n");
     piccolo_create_task(stress_tester);
     reporter = piccolo_create_task(reporter_task);
     piccolo_create_task(find_primes);

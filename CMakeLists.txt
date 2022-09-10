@@ -14,7 +14,7 @@ include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
 project(
     piccolo_os_plus_demo
-    VERSION 1.0
+    VERSION 1.01
     DESCRIPTION "A demonstration of Piccolo OS Plus"
     LANGUAGES C CXX ASM)
 
@@ -22,7 +22,7 @@ list(APPEND PICO_CONFIG_HEADER_FILES ${PROJECT_SOURCE_DIR}/piccolo_os_lock_core.
 # Initialise the Pico SDK
 pico_sdk_init()
 
-# Add executable. Default name is the project name, version 0.1
+# Add executable. Default name is the project name
 
 add_executable(${PROJECT_NAME} piccolo_os_demo.c context_switch.s piccolo_os.c piccolo_os.h 
 piccolo_os_lock_core.c piccolo_os_lock_core.h)

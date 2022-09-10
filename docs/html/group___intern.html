@@ -18,7 +18,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Piccolo OS Plus<span id="projectnumber">&#160;1.0</span>
+   <div id="projectname">Piccolo OS Plus<span id="projectnumber">&#160;1.01</span>
    </div>
    <div id="projectbrief">A feature rich extension of Piccolo OS</div>
   </td>
@@ -41,7 +41,7 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a> &#124;
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
 <a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a> &#124;
@@ -52,7 +52,7 @@ $(function() {
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
-Classes</h2></td></tr>
+Data Structures</h2></td></tr>
 <tr class="memitem:structpiccolo__os__task__t"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a></td></tr>
 <tr class="memdesc:structpiccolo__os__task__t"><td class="mdescLeft">&#160;</td><td class="mdescRight">Piccolo OS task data structure.  <a href="group___intern.html#structpiccolo__os__task__t">More...</a><br /></td></tr>
 <tr class="separator:structpiccolo__os__task__t"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -63,7 +63,7 @@ Classes</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:gaa6320ec6469eb0b855967802bd711ca3"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gaa6320ec6469eb0b855967802bd711ca3">PICCOLO_OS_STACK_SIZE</a>&#160;&#160;&#160;1024</td></tr>
-<tr class="memdesc:gaa6320ec6469eb0b855967802bd711ca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of our user task stacks in 32 bit words.  <a href="group___intern.html#gaa6320ec6469eb0b855967802bd711ca3">More...</a><br /></td></tr>
+<tr class="memdesc:gaa6320ec6469eb0b855967802bd711ca3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Size of a task stack in 32 bit words.  <a href="group___intern.html#gaa6320ec6469eb0b855967802bd711ca3">More...</a><br /></td></tr>
 <tr class="separator:gaa6320ec6469eb0b855967802bd711ca3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga703631a71fd33c17506477df641a7fbf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga703631a71fd33c17506477df641a7fbf">PICCOLO_OS_THREAD_PSP</a>&#160;&#160;&#160;0xFFFFFFFD</td></tr>
 <tr class="separator:ga703631a71fd33c17506477df641a7fbf"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -73,8 +73,11 @@ Macros</h2></td></tr>
 <tr class="memitem:gaf41b034dc3c049eba615d984a38d2629"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gaf41b034dc3c049eba615d984a38d2629">PICCOLO_OS_MAX_IDLE</a>&#160;&#160;&#160;700</td></tr>
 <tr class="memdesc:gaf41b034dc3c049eba615d984a38d2629"><td class="mdescLeft">&#160;</td><td class="mdescRight">The maximum time that the scheduler will sleep in the idle task (in usec).  <a href="group___intern.html#gaf41b034dc3c049eba615d984a38d2629">More...</a><br /></td></tr>
 <tr class="separator:gaf41b034dc3c049eba615d984a38d2629"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2465ada922a63d1f04f8cca8bcde084a"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga2465ada922a63d1f04f8cca8bcde084a">PICCOLO_OS_NO_IDLE_FOR_SIGNALS</a>&#160;&#160;&#160;true</td></tr>
+<tr class="memdesc:ga2465ada922a63d1f04f8cca8bcde084a"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true, scheduler will not idle if tasks are blocking for signals.  <a href="group___intern.html#ga2465ada922a63d1f04f8cca8bcde084a">More...</a><br /></td></tr>
+<tr class="separator:ga2465ada922a63d1f04f8cca8bcde084a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga4b6aac9d4257c64faae93a58037b113c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga4b6aac9d4257c64faae93a58037b113c">PICCOLO_OS_MULTICORE</a>&#160;&#160;&#160;true</td></tr>
-<tr class="memdesc:ga4b6aac9d4257c64faae93a58037b113c"><td class="mdescLeft">&#160;</td><td class="mdescRight">enable/disable multi-core scheduling  <a href="group___intern.html#ga4b6aac9d4257c64faae93a58037b113c">More...</a><br /></td></tr>
+<tr class="memdesc:ga4b6aac9d4257c64faae93a58037b113c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enable/disable multi-core scheduling.  <a href="group___intern.html#ga4b6aac9d4257c64faae93a58037b113c">More...</a><br /></td></tr>
 <tr class="separator:ga4b6aac9d4257c64faae93a58037b113c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga86abfef96fa909bde46512610080a545"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga86abfef96fa909bde46512610080a545">PICCOLO_OS_MAX_SIGNAL</a>&#160;&#160;&#160;10</td></tr>
 <tr class="memdesc:ga86abfef96fa909bde46512610080a545"><td class="mdescLeft">&#160;</td><td class="mdescRight">Signal channel size. (max is INT32_MAX)  <a href="group___intern.html#ga86abfef96fa909bde46512610080a545">More...</a><br /></td></tr>
@@ -86,98 +89,46 @@ Macros</h2></td></tr>
 Enumerations</h2></td></tr>
 <tr class="memitem:ga7c6e357870874b0b46cca591cde1b9b7"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga7c6e357870874b0b46cca591cde1b9b7">piccolo_task_flag_values</a> { <br />
 &#160;&#160;<a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7abce7778ea93669aa227e96d1846570f8">PICCOLO_TASK_RUNNING</a> = 0x1
-, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a3b38da1cad0f8df8d4f86569feb51724">PICCOLO_TASK_BLOCKED</a> = 0x2
-, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a865f3ccdce19f6ab52ee18a47cbd433f">PICCOLO_TASK_ZOMBIE</a> = 0x4
-, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a0a11d6297087b2b78df5102e0806b953">PICCOLO_TASK_SLEEPING</a> = 0x8
+, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a865f3ccdce19f6ab52ee18a47cbd433f">PICCOLO_TASK_ZOMBIE</a> = 0x2
+, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a0a11d6297087b2b78df5102e0806b953">PICCOLO_TASK_SLEEPING</a> = 0x4
+, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7abe72ab73177b802c0b9c3c5653b9537c">PICCOLO_TASK_GET_SIGNAL_BLOCKED</a> = 0x8
 , <br />
-&#160;&#160;<a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7abe72ab73177b802c0b9c3c5653b9537c">PICCOLO_TASK_GET_SIGNAL_BLOCKED</a> = 0x10
-, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a79ddeacadff405cdc030c0aa89164a94">PICCOLO_TASK_SEND_SIGNAL_BLOCKED</a> = 0x20
+&#160;&#160;<a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a79ddeacadff405cdc030c0aa89164a94">PICCOLO_TASK_SEND_SIGNAL_BLOCKED</a> = 0x10
+, <a class="el" href="group___intern.html#gga7c6e357870874b0b46cca591cde1b9b7a205dbaec30e6f6a970cf480471ad271a">PICCOLO_TASK_BLOCKING</a> = (PICCOLO_TASK_SLEEPING | PICCOLO_TASK_GET_SIGNAL_BLOCKED | PICCOLO_TASK_SEND_SIGNAL_BLOCKED)
 <br />
  }</td></tr>
 <tr class="separator:ga7c6e357870874b0b46cca591cde1b9b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gad2c3d360c3a34362795e2692585d415c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gad2c3d360c3a34362795e2692585d415c">piccolo_get_task_id</a> ()</td></tr>
-<tr class="memdesc:gad2c3d360c3a34362795e2692585d415c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the ID (task struct address) of the running task.  <a href="group___intern.html#gad2c3d360c3a34362795e2692585d415c">More...</a><br /></td></tr>
-<tr class="separator:gad2c3d360c3a34362795e2692585d415c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga71a59d00d48e0512b849615509ef1c4b"><td class="memItemLeft" align="right" valign="top">uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga71a59d00d48e0512b849615509ef1c4b">__piccolo_os_create_task</a> (uint32_t *task_stack, void(*pointer_to_task_function)(void), uint32_t starting_argument)</td></tr>
 <tr class="memdesc:ga71a59d00d48e0512b849615509ef1c4b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize user task stack for execution.  <a href="group___intern.html#ga71a59d00d48e0512b849615509ef1c4b">More...</a><br /></td></tr>
 <tr class="separator:ga71a59d00d48e0512b849615509ef1c4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7441ecb1f631f7840bb96962ca02b38d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga7441ecb1f631f7840bb96962ca02b38d">piccolo_create_task</a> (void(*pointer_to_task_function)(void))</td></tr>
-<tr class="memdesc:ga7441ecb1f631f7840bb96962ca02b38d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create a new task and initialize it's stack.  <a href="group___intern.html#ga7441ecb1f631f7840bb96962ca02b38d">More...</a><br /></td></tr>
-<tr class="separator:ga7441ecb1f631f7840bb96962ca02b38d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafbe282da8abfaf7d97aded6da805c23e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gafbe282da8abfaf7d97aded6da805c23e">piccolo_end_task</a> (void)</td></tr>
-<tr class="memdesc:gafbe282da8abfaf7d97aded6da805c23e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ends the current task.  <a href="group___intern.html#gafbe282da8abfaf7d97aded6da805c23e">More...</a><br /></td></tr>
-<tr class="separator:gafbe282da8abfaf7d97aded6da805c23e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1349857a1febc3090dbc9c2773a22bd2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga1349857a1febc3090dbc9c2773a22bd2">piccolo_sleep</a> (uint32_t ticks)</td></tr>
-<tr class="memdesc:ga1349857a1febc3090dbc9c2773a22bd2"><td class="mdescLeft">&#160;</td><td class="mdescRight">sleeps for a specified number of milliseconds  <a href="group___intern.html#ga1349857a1febc3090dbc9c2773a22bd2">More...</a><br /></td></tr>
-<tr class="separator:ga1349857a1febc3090dbc9c2773a22bd2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga8e5d662da97b9d3264cae0b9efb90609"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga8e5d662da97b9d3264cae0b9efb90609">piccolo_sleep_until</a> (absolute_time_t until)</td></tr>
-<tr class="memdesc:ga8e5d662da97b9d3264cae0b9efb90609"><td class="mdescLeft">&#160;</td><td class="mdescRight">sleeps until an absolute time.  <a href="group___intern.html#ga8e5d662da97b9d3264cae0b9efb90609">More...</a><br /></td></tr>
-<tr class="separator:ga8e5d662da97b9d3264cae0b9efb90609"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga35b9f2fe09b9c47e5748819ab5c91b4d"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga35b9f2fe09b9c47e5748819ab5c91b4d">__piccolo_send_signal</a> (<a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *task, bool block, uint32_t timeout_ms)</td></tr>
 <tr class="memdesc:ga35b9f2fe09b9c47e5748819ab5c91b4d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper for send signal functions.  <a href="group___intern.html#ga35b9f2fe09b9c47e5748819ab5c91b4d">More...</a><br /></td></tr>
 <tr class="separator:ga35b9f2fe09b9c47e5748819ab5c91b4d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2c150669675f7000c331f83d1712f259"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga2c150669675f7000c331f83d1712f259">piccolo_send_signal</a> (<a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *toTask)</td></tr>
-<tr class="memdesc:ga2c150669675f7000c331f83d1712f259"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a signal to the specified task.  <a href="group___intern.html#ga2c150669675f7000c331f83d1712f259">More...</a><br /></td></tr>
-<tr class="separator:ga2c150669675f7000c331f83d1712f259"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gade8fa970b4923f0f37a809ece241140d"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gade8fa970b4923f0f37a809ece241140d">piccolo_send_signal_blocking</a> (<a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *toTask)</td></tr>
-<tr class="memdesc:gade8fa970b4923f0f37a809ece241140d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a signal to the specified task. If the signal channel is full, block until it is not.  <a href="group___intern.html#gade8fa970b4923f0f37a809ece241140d">More...</a><br /></td></tr>
-<tr class="separator:gade8fa970b4923f0f37a809ece241140d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga1ba2602cf4ce6101aaa410fdf92aced0"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga1ba2602cf4ce6101aaa410fdf92aced0">piccolo_send_signal_blocking_timeout</a> (<a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *toTask, uint32_t timeout_ms)</td></tr>
-<tr class="memdesc:ga1ba2602cf4ce6101aaa410fdf92aced0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send a signal to a specified task. Block with a timeout if the channel is full.  <a href="group___intern.html#ga1ba2602cf4ce6101aaa410fdf92aced0">More...</a><br /></td></tr>
-<tr class="separator:ga1ba2602cf4ce6101aaa410fdf92aced0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga8d3b5026766f01f3947ee83ee437ffac"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga8d3b5026766f01f3947ee83ee437ffac">__piccolo_get_signal</a> (bool block, uint32_t timeout_ms, bool get_all)</td></tr>
 <tr class="memdesc:ga8d3b5026766f01f3947ee83ee437ffac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Helper for get signal functions.  <a href="group___intern.html#ga8d3b5026766f01f3947ee83ee437ffac">More...</a><br /></td></tr>
 <tr class="separator:ga8d3b5026766f01f3947ee83ee437ffac"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaecae447238e1041d7179460b2fc54e4f"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gaecae447238e1041d7179460b2fc54e4f">piccolo_get_signal</a> ()</td></tr>
-<tr class="memdesc:gaecae447238e1041d7179460b2fc54e4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to get a signal.  <a href="group___intern.html#gaecae447238e1041d7179460b2fc54e4f">More...</a><br /></td></tr>
-<tr class="separator:gaecae447238e1041d7179460b2fc54e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga2044163bd34fbcac7a9669c01bb461d6"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga2044163bd34fbcac7a9669c01bb461d6">piccolo_get_signal_blocking</a> ()</td></tr>
-<tr class="memdesc:ga2044163bd34fbcac7a9669c01bb461d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get a signal. If none are available, block until one arrives.  <a href="group___intern.html#ga2044163bd34fbcac7a9669c01bb461d6">More...</a><br /></td></tr>
-<tr class="separator:ga2044163bd34fbcac7a9669c01bb461d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3fc4dce54e36e19e46458e3f9ef32cbb"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga3fc4dce54e36e19e46458e3f9ef32cbb">piccolo_get_signal_blocking_timeout</a> (uint32_t timeout_ms)</td></tr>
-<tr class="memdesc:ga3fc4dce54e36e19e46458e3f9ef32cbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Attempt to get a signal. Block with a timeout until one arrives if there were none.  <a href="group___intern.html#ga3fc4dce54e36e19e46458e3f9ef32cbb">More...</a><br /></td></tr>
-<tr class="separator:ga3fc4dce54e36e19e46458e3f9ef32cbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad92374ebff88fb7e74dd81305ee014b3"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gad92374ebff88fb7e74dd81305ee014b3">piccolo_get_signal_all</a> ()</td></tr>
-<tr class="memdesc:gad92374ebff88fb7e74dd81305ee014b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all the signals available.  <a href="group___intern.html#gad92374ebff88fb7e74dd81305ee014b3">More...</a><br /></td></tr>
-<tr class="separator:gad92374ebff88fb7e74dd81305ee014b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gafc5a327b7032ac0c6197cf04180b010e"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gafc5a327b7032ac0c6197cf04180b010e">piccolo_get_signal_all_blocking</a> ()</td></tr>
-<tr class="memdesc:gafc5a327b7032ac0c6197cf04180b010e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all the signals available. Block until one arrives if there were none.  <a href="group___intern.html#gafc5a327b7032ac0c6197cf04180b010e">More...</a><br /></td></tr>
-<tr class="separator:gafc5a327b7032ac0c6197cf04180b010e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9ab15b8b202cf89ccab7e65ff5dc0045"><td class="memItemLeft" align="right" valign="top">int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga9ab15b8b202cf89ccab7e65ff5dc0045">piccolo_get_signal_all_blocking_timeout</a> (uint32_t timeout_ms)</td></tr>
-<tr class="memdesc:ga9ab15b8b202cf89ccab7e65ff5dc0045"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all the signals available. Block with a timeout until one arrives if there were none.  <a href="group___intern.html#ga9ab15b8b202cf89ccab7e65ff5dc0045">More...</a><br /></td></tr>
-<tr class="separator:ga9ab15b8b202cf89ccab7e65ff5dc0045"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabda6a005ffc072854d452ed468b9cd10"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gabda6a005ffc072854d452ed468b9cd10">__piccolo_garbage_man</a> (void)</td></tr>
 <tr class="memdesc:gabda6a005ffc072854d452ed468b9cd10"><td class="mdescLeft">&#160;</td><td class="mdescRight">Task to delete dead tasks.  <a href="group___intern.html#gabda6a005ffc072854d452ed468b9cd10">More...</a><br /></td></tr>
 <tr class="separator:gabda6a005ffc072854d452ed468b9cd10"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5518a5e6b68942455ca2d544f2941209"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga5518a5e6b68942455ca2d544f2941209">__piccolo_task_init</a> (void)</td></tr>
 <tr class="memdesc:ga5518a5e6b68942455ca2d544f2941209"><td class="mdescLeft">&#160;</td><td class="mdescRight">Switch the scheduler to handler mode.  <a href="group___intern.html#ga5518a5e6b68942455ca2d544f2941209">More...</a><br /></td></tr>
 <tr class="separator:ga5518a5e6b68942455ca2d544f2941209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad8837c590024ae863a1d6e0af2b0e329"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gad8837c590024ae863a1d6e0af2b0e329">__isr_SVCALL</a> (void)</td></tr>
-<tr class="separator:gad8837c590024ae863a1d6e0af2b0e329"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gadff28f28fb63a151704985aba1116319"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gadff28f28fb63a151704985aba1116319">piccolo_init</a> ()</td></tr>
-<tr class="memdesc:gadff28f28fb63a151704985aba1116319"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the piccolo run time environment.  <a href="group___intern.html#gadff28f28fb63a151704985aba1116319">More...</a><br /></td></tr>
-<tr class="separator:gadff28f28fb63a151704985aba1116319"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaf53b6b826e323831509ee5d6c3c340e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gaf53b6b826e323831509ee5d6c3c340e3">__piccolo_idle</a> (int32_t uSec)</td></tr>
 <tr class="memdesc:gaf53b6b826e323831509ee5d6c3c340e3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Internal Idle "task" used by the scheduler to sleep the core.  <a href="group___intern.html#gaf53b6b826e323831509ee5d6c3c340e3">More...</a><br /></td></tr>
 <tr class="separator:gaf53b6b826e323831509ee5d6c3c340e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga048859082cafa6f853ea5003ab8bb3fe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga048859082cafa6f853ea5003ab8bb3fe">__piccolo_start_core1</a> (void)</td></tr>
-<tr class="memdesc:ga048859082cafa6f853ea5003ab8bb3fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Core 1 code to initialize and immediately start piccolo scheduler.  <a href="group___intern.html#ga048859082cafa6f853ea5003ab8bb3fe">More...</a><br /></td></tr>
+<tr class="memdesc:ga048859082cafa6f853ea5003ab8bb3fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Core 1 code to initialize and immediately start the piccolo scheduler.  <a href="group___intern.html#ga048859082cafa6f853ea5003ab8bb3fe">More...</a><br /></td></tr>
 <tr class="separator:ga048859082cafa6f853ea5003ab8bb3fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0a198acb7732c0caf302b7cb21edc9f9"><td class="memItemLeft" align="right" valign="top">void __time_critical_func()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga0a198acb7732c0caf302b7cb21edc9f9">piccolo_start</a> ()</td></tr>
-<tr class="memdesc:ga0a198acb7732c0caf302b7cb21edc9f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start the Piccolo Task scheduler in handler mode.  <a href="group___intern.html#ga0a198acb7732c0caf302b7cb21edc9f9">More...</a><br /></td></tr>
-<tr class="separator:ga0a198acb7732c0caf302b7cb21edc9f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="var-members" name="var-members"></a>
 Variables</h2></td></tr>
-<tr class="memitem:ga3c2e64034366bf17fa665f61c655e176"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#ga3c2e64034366bf17fa665f61c655e176">kills</a> = 0</td></tr>
-<tr class="separator:ga3c2e64034366bf17fa665f61c655e176"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae7b8fb68f995198605f7bd383d581325"><td class="memItemLeft" align="right" valign="top">struct <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gae7b8fb68f995198605f7bd383d581325">piccolo_os_task_t</a></td></tr>
-<tr class="separator:gae7b8fb68f995198605f7bd383d581325"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadd49d93bd49fb53059396876e809d706"><td class="memItemLeft" align="right" valign="top">**struct <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___intern.html#gadd49d93bd49fb53059396876e809d706">piccolo_os_task_t</a></td></tr>
+<tr class="separator:gadd49d93bd49fb53059396876e809d706"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/><h2 class="groupheader">Class Documentation</h2>
+<hr/><h2 class="groupheader">Data Structure Documentation</h2>
 <a name="structpiccolo__os__task__t" id="structpiccolo__os__task__t"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#structpiccolo__os__task__t">&#9670;&nbsp;</a></span>piccolo_os_task_t</h2>
 
@@ -191,7 +142,7 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 <div class="textblock"><p >Piccolo OS task data structure. </p>
 </div><table class="fieldtable">
-<tr><th colspan="3">Class Members</th></tr>
+<tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
 <a id="a642ca2ba60423570a3259b704071ed3a" name="a642ca2ba60423570a3259b704071ed3a"></a>struct <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *</td>
 <td class="fieldname">
@@ -279,7 +230,7 @@ wakeup</td>
 </div><div class="memdoc">
 <div class="textblock"><p >Piccolo OS internal data structure. </p>
 </div><table class="fieldtable">
-<tr><th colspan="3">Class Members</th></tr>
+<tr><th colspan="3">Data Fields</th></tr>
 <tr><td class="fieldtype">
 <a id="a6be479cf147169eb9d5cdcdb3780bcb9" name="a6be479cf147169eb9d5cdcdb3780bcb9"></a>volatile <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *</td>
 <td class="fieldname">
@@ -380,7 +331,24 @@ zombies</td>
       </table>
 </div><div class="memdoc">
 
-<p>enable/disable multi-core scheduling </p>
+<p>Enable/disable multi-core scheduling. </p>
+
+</div>
+</div>
+<a id="ga2465ada922a63d1f04f8cca8bcde084a" name="ga2465ada922a63d1f04f8cca8bcde084a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2465ada922a63d1f04f8cca8bcde084a">&#9670;&nbsp;</a></span>PICCOLO_OS_NO_IDLE_FOR_SIGNALS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define PICCOLO_OS_NO_IDLE_FOR_SIGNALS&#160;&#160;&#160;true</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>If true, scheduler will not idle if tasks are blocking for signals. </p>
+<p >If set to false, the scheduler will run the idle task for the minimum of PICCOLO_OS_MAX_IDLE or the smallest time remaining for any task with a timeout running. This will improve power consumption but potentially delay the response of any task waiting for a signal. This may make good sense for applications without serious response time concerns. </p>
 
 </div>
 </div>
@@ -396,7 +364,7 @@ zombies</td>
       </table>
 </div><div class="memdoc">
 
-<p>Size of our user task stacks in 32 bit words. </p>
+<p>Size of a task stack in 32 bit words. </p>
 <dl class="section note"><dt>Note</dt><dd>Must be <b>even</b>, for exception frame stack alignment! </dd></dl>
 
 </div>
@@ -461,35 +429,23 @@ zombies</td>
       </table>
 </div><div class="memdoc">
 <table class="fieldtable">
-<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7abce7778ea93669aa227e96d1846570f8" name="gga7c6e357870874b0b46cca591cde1b9b7abce7778ea93669aa227e96d1846570f8"></a>PICCOLO_TASK_RUNNING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a3b38da1cad0f8df8d4f86569feb51724" name="gga7c6e357870874b0b46cca591cde1b9b7a3b38da1cad0f8df8d4f86569feb51724"></a>PICCOLO_TASK_BLOCKED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a865f3ccdce19f6ab52ee18a47cbd433f" name="gga7c6e357870874b0b46cca591cde1b9b7a865f3ccdce19f6ab52ee18a47cbd433f"></a>PICCOLO_TASK_ZOMBIE&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a0a11d6297087b2b78df5102e0806b953" name="gga7c6e357870874b0b46cca591cde1b9b7a0a11d6297087b2b78df5102e0806b953"></a>PICCOLO_TASK_SLEEPING&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7abe72ab73177b802c0b9c3c5653b9537c" name="gga7c6e357870874b0b46cca591cde1b9b7abe72ab73177b802c0b9c3c5653b9537c"></a>PICCOLO_TASK_GET_SIGNAL_BLOCKED&#160;</td><td class="fielddoc"></td></tr>
-<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a79ddeacadff405cdc030c0aa89164a94" name="gga7c6e357870874b0b46cca591cde1b9b7a79ddeacadff405cdc030c0aa89164a94"></a>PICCOLO_TASK_SEND_SIGNAL_BLOCKED&#160;</td><td class="fielddoc"></td></tr>
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7abce7778ea93669aa227e96d1846570f8" name="gga7c6e357870874b0b46cca591cde1b9b7abce7778ea93669aa227e96d1846570f8"></a>PICCOLO_TASK_RUNNING&#160;</td><td class="fielddoc"><p >Task is running. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a865f3ccdce19f6ab52ee18a47cbd433f" name="gga7c6e357870874b0b46cca591cde1b9b7a865f3ccdce19f6ab52ee18a47cbd433f"></a>PICCOLO_TASK_ZOMBIE&#160;</td><td class="fielddoc"><p >Task has ended and should be removed by the scheduler. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a0a11d6297087b2b78df5102e0806b953" name="gga7c6e357870874b0b46cca591cde1b9b7a0a11d6297087b2b78df5102e0806b953"></a>PICCOLO_TASK_SLEEPING&#160;</td><td class="fielddoc"><p >Task has a timeout running. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7abe72ab73177b802c0b9c3c5653b9537c" name="gga7c6e357870874b0b46cca591cde1b9b7abe72ab73177b802c0b9c3c5653b9537c"></a>PICCOLO_TASK_GET_SIGNAL_BLOCKED&#160;</td><td class="fielddoc"><p >Task blocked getting signal. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a79ddeacadff405cdc030c0aa89164a94" name="gga7c6e357870874b0b46cca591cde1b9b7a79ddeacadff405cdc030c0aa89164a94"></a>PICCOLO_TASK_SEND_SIGNAL_BLOCKED&#160;</td><td class="fielddoc"><p >Task block sending signal. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="gga7c6e357870874b0b46cca591cde1b9b7a205dbaec30e6f6a970cf480471ad271a" name="gga7c6e357870874b0b46cca591cde1b9b7a205dbaec30e6f6a970cf480471ad271a"></a>PICCOLO_TASK_BLOCKING&#160;</td><td class="fielddoc"><p >Task blocked for some reason. </p>
+</td></tr>
 </table>
 
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gad8837c590024ae863a1d6e0af2b0e329" name="gad8837c590024ae863a1d6e0af2b0e329"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad8837c590024ae863a1d6e0af2b0e329">&#9670;&nbsp;</a></span>__isr_SVCALL()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void __isr_SVCALL </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="gabda6a005ffc072854d452ed468b9cd10" name="gabda6a005ffc072854d452ed468b9cd10"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gabda6a005ffc072854d452ed468b9cd10">&#9670;&nbsp;</a></span>__piccolo_garbage_man()</h2>
 
@@ -581,7 +537,8 @@ zombies</td>
   </table>
   </dd>
 </dl>
-<p>Enter sleep mode and then "yield" back to the scheduler. Entry and parameter passing is set up in the dummy stack frame before switching context. </p>
+<p>Enter sleep mode and then "yield" back to the scheduler. Entry and parameter passing is set up in a dummy stack frame before switching context.</p>
+<dl class="section note"><dt>Note</dt><dd>Can be running on <b>both</b> cores with different sleep times </dd></dl>
 
 </div>
 </div>
@@ -630,7 +587,7 @@ zombies</td>
 <p>We setup the initial stack frame with:</p><ul>
 <li>"software saved" LR set to PICCOLO_OS_THREAD_PSP so that exception return works correctly.</li>
 <li>PC Set to the task starting point (function entry)</li>
-<li>Exception frame LR set to <code>piccolo_end_task</code> for when task returns</li>
+<li>Exception frame LR set to <code><a class="el" href="group___cinter.html#ga449780125dd378c672628587b93dfbcb" title="Ends the current task, never returns.">piccolo_end_task()</a></code> in case the task exits or returns</li>
 </ul>
 <p >PICCOLO_OS_THREAD_PSP means:</p><ul>
 <li>Return to Thread mode.</li>
@@ -704,8 +661,8 @@ zombies</td>
       </table>
 </div><div class="memdoc">
 
-<p>Core 1 code to initialize and immediately start piccolo scheduler. </p>
-<p >Remember that the piccolo init checks the core number and does not setup the data structures or the interrupt vector table if it is not core 0. The scheduler should run fine on both cores at once. </p>
+<p>Core 1 code to initialize and immediately start the piccolo scheduler. </p>
+<p >Remember that the <code><a class="el" href="group___cinter.html#gadff28f28fb63a151704985aba1116319" title="Initialize the piccolo run time environment.">piccolo_init()</a></code> checks the core number and does not setup the data structures or the interrupt vector table if it is not core 0. <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> takes similar precautions. The scheduler should run fine on both cores at once. </p>
 
 </div>
 </div>
@@ -726,511 +683,19 @@ zombies</td>
 </div><div class="memdoc">
 
 <p>Switch the scheduler to handler mode. </p>
-<p >After a reset, processor is in thread mode Switch to handler mode, so that the Piccolo OS kernel runs in handler mode, and to ensure the correct return from an exception/interrupt later when switching to a task. We make a dummy stack and arrange to route the service call exception back to ourselves! </p>
-
-</div>
-</div>
-<a id="ga7441ecb1f631f7840bb96962ca02b38d" name="ga7441ecb1f631f7840bb96962ca02b38d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7441ecb1f631f7840bb96962ca02b38d">&#9670;&nbsp;</a></span>piccolo_create_task()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> * piccolo_create_task </td>
-          <td>(</td>
-          <td class="paramtype">void(*)(void)&#160;</td>
-          <td class="paramname"><em>pointer_to_task_function</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Create a new task and initialize it's stack. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pointer_to_task_function</td><td>The task function to call initially </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Task identifier (Pointer ti task structure) or 0 if create failed</dd></dl>
-<p>Allocates a new task and initializes its stack to the start of the given function. Inserts the task at the end of the scheduler task list. Can be called to create a new task while the scheduler is running. (In other words, a running task can create another task at runtime.) </p>
-
-</div>
-</div>
-<a id="gafbe282da8abfaf7d97aded6da805c23e" name="gafbe282da8abfaf7d97aded6da805c23e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafbe282da8abfaf7d97aded6da805c23e">&#9670;&nbsp;</a></span>piccolo_end_task()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void piccolo_end_task </td>
-          <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Ends the current task. </p>
-<dl class="section return"><dt>Returns</dt><dd>Never!</dd></dl>
-<p>Marks the current task as dead (ZOMBIE) so the scheduler can remove it. (The scheduler must do this, since we cannot free the memory for a task while it running!). The scheduler will immediately remove ZOMBIE tasks from the scheduler chain and add them to the zombies list for the garbage collector to return to free memory.</p>
-<dl class="section note"><dt>Note</dt><dd>A task that executes a <code>return</code> will also be ended. </dd></dl>
-
-</div>
-</div>
-<a id="gaecae447238e1041d7179460b2fc54e4f" name="gaecae447238e1041d7179460b2fc54e4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaecae447238e1041d7179460b2fc54e4f">&#9670;&nbsp;</a></span>piccolo_get_signal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_get_signal </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Attempt to get a signal. </p>
-<dl class="section return"><dt>Returns</dt><dd>1 if signal received, 0 if none were available </dd></dl>
-
-</div>
-</div>
-<a id="gad92374ebff88fb7e74dd81305ee014b3" name="gad92374ebff88fb7e74dd81305ee014b3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad92374ebff88fb7e74dd81305ee014b3">&#9670;&nbsp;</a></span>piccolo_get_signal_all()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_get_signal_all </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get all the signals available. </p>
-<dl class="section return"><dt>Returns</dt><dd>Number of signals received, 0 if none were available</dd></dl>
-<p>Empties the signal channel if signals were available or received in time. </p>
-
-</div>
-</div>
-<a id="gafc5a327b7032ac0c6197cf04180b010e" name="gafc5a327b7032ac0c6197cf04180b010e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gafc5a327b7032ac0c6197cf04180b010e">&#9670;&nbsp;</a></span>piccolo_get_signal_all_blocking()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_get_signal_all_blocking </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get all the signals available. Block until one arrives if there were none. </p>
-<dl class="section return"><dt>Returns</dt><dd>Number of signals received</dd></dl>
-<p>Empties the signal channel. </p>
-
-</div>
-</div>
-<a id="ga9ab15b8b202cf89ccab7e65ff5dc0045" name="ga9ab15b8b202cf89ccab7e65ff5dc0045"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga9ab15b8b202cf89ccab7e65ff5dc0045">&#9670;&nbsp;</a></span>piccolo_get_signal_all_blocking_timeout()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_get_signal_all_blocking_timeout </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>timeout_ms</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get all the signals available. Block with a timeout until one arrives if there were none. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">timeout_ms</td><td>Time in ms to wait for a signal to arrive</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of signals received, 0 if timeout occurred.</dd></dl>
-<p>Empties the signal channel. </p>
-
-</div>
-</div>
-<a id="ga2044163bd34fbcac7a9669c01bb461d6" name="ga2044163bd34fbcac7a9669c01bb461d6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2044163bd34fbcac7a9669c01bb461d6">&#9670;&nbsp;</a></span>piccolo_get_signal_blocking()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_get_signal_blocking </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Get a signal. If none are available, block until one arrives. </p>
-<dl class="section return"><dt>Returns</dt><dd>1 for number of signals received. </dd></dl>
-
-</div>
-</div>
-<a id="ga3fc4dce54e36e19e46458e3f9ef32cbb" name="ga3fc4dce54e36e19e46458e3f9ef32cbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3fc4dce54e36e19e46458e3f9ef32cbb">&#9670;&nbsp;</a></span>piccolo_get_signal_blocking_timeout()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_get_signal_blocking_timeout </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>timeout_ms</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Attempt to get a signal. Block with a timeout until one arrives if there were none. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">timeout_ms</td><td>non zero if timeout enabled on blocking </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Number of signals received. Will be zero is timeout occurred. </dd></dl>
-
-</div>
-</div>
-<a id="gad2c3d360c3a34362795e2692585d415c" name="gad2c3d360c3a34362795e2692585d415c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gad2c3d360c3a34362795e2692585d415c">&#9670;&nbsp;</a></span>piccolo_get_task_id()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> * piccolo_get_task_id </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Get the ID (task struct address) of the running task. </p>
-<dl class="section return"><dt>Returns</dt><dd>piccolo_os_task_t* Task ID of the current task.</dd></dl>
-<p>Return the task ID of the running task. Useful for telling callback routines (or other tasks) where to send signals.</p>
-<dl class="section note"><dt>Note</dt><dd>Will return the core number before <code>piccolo_start</code> is running on that core. But if you </dd>
-<dd>
-don't call this except inside a task, you will always get a valid task ID. </dd></dl>
-
-</div>
-</div>
-<a id="gadff28f28fb63a151704985aba1116319" name="gadff28f28fb63a151704985aba1116319"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gadff28f28fb63a151704985aba1116319">&#9670;&nbsp;</a></span>piccolo_init()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void piccolo_init </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Initialize the piccolo run time environment. </p>
-<p >Set the scheduler task list to empty and set up the context switching, interrupt handlers, interrupt priorities and interlocks (spinlocks) for the scheduler.</p>
-<dl class="section note"><dt>Note</dt><dd>Also called internally on Core 1 when multi-core is enabled. On core1 only the interrupt priorities are set, and all the "one time" stuff is skipped. </dd></dl>
-
-</div>
-</div>
-<a id="ga2c150669675f7000c331f83d1712f259" name="ga2c150669675f7000c331f83d1712f259"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga2c150669675f7000c331f83d1712f259">&#9670;&nbsp;</a></span>piccolo_send_signal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_send_signal </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *&#160;</td>
-          <td class="paramname"><em>toTask</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Send a signal to the specified task. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">toTask</td><td>pointer to task to send to </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>1 if signal sent. &lt;0 if no room</dd></dl>
-<p>Send a signal to the designated task. If there is space the signal is sent. If there is no room for the signal, return the error. </p>
-
-</div>
-</div>
-<a id="gade8fa970b4923f0f37a809ece241140d" name="gade8fa970b4923f0f37a809ece241140d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gade8fa970b4923f0f37a809ece241140d">&#9670;&nbsp;</a></span>piccolo_send_signal_blocking()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_send_signal_blocking </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *&#160;</td>
-          <td class="paramname"><em>toTask</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Send a signal to the specified task. If the signal channel is full, block until it is not. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">toTask</td><td>pointer to task to send to </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>1 to indicate success.</dd></dl>
-<p>Send a signal to the designated task. If there is space the signal is sent. If there is no room for the signal, block until space is available. </p>
-
-</div>
-</div>
-<a id="ga1ba2602cf4ce6101aaa410fdf92aced0" name="ga1ba2602cf4ce6101aaa410fdf92aced0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1ba2602cf4ce6101aaa410fdf92aced0">&#9670;&nbsp;</a></span>piccolo_send_signal_blocking_timeout()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">int32_t piccolo_send_signal_blocking_timeout </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> *&#160;</td>
-          <td class="paramname"><em>toTask</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>timeout_ms</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Send a signal to a specified task. Block with a timeout if the channel is full. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">toTask</td><td>pointer to task to send to </td></tr>
-    <tr><td class="paramname">timeout_ms</td><td>maximum time in ms to wait if the channel is full. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>1 if signal sent. &lt;0 if a timeout occurred while waiting for space in the channel.</dd></dl>
-<p>Send a signal to the designated task. If there is space the signal is sent. If there is no room for the signal, wait until the timeout expires or space is available. </p>
-
-</div>
-</div>
-<a id="ga1349857a1febc3090dbc9c2773a22bd2" name="ga1349857a1febc3090dbc9c2773a22bd2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga1349857a1febc3090dbc9c2773a22bd2">&#9670;&nbsp;</a></span>piccolo_sleep()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void piccolo_sleep </td>
-          <td>(</td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>ticks</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>sleeps for a specified number of milliseconds </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">ticks</td><td>number of milliseconds to sleep;</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>The scheduler marks the task as blocked and suspends its execution until the delay has expired. </p>
-
-</div>
-</div>
-<a id="ga8e5d662da97b9d3264cae0b9efb90609" name="ga8e5d662da97b9d3264cae0b9efb90609"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga8e5d662da97b9d3264cae0b9efb90609">&#9670;&nbsp;</a></span>piccolo_sleep_until()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void piccolo_sleep_until </td>
-          <td>(</td>
-          <td class="paramtype">absolute_time_t&#160;</td>
-          <td class="paramname"><em>until</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>sleeps until an absolute time. </p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">until</td><td>absolute time to wake up</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Set the wakeup time for the task and mark it as sleeping for the scheduler. Then suspend execution until the scheduler wakes up the task. </p>
-
-</div>
-</div>
-<a id="ga0a198acb7732c0caf302b7cb21edc9f9" name="ga0a198acb7732c0caf302b7cb21edc9f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga0a198acb7732c0caf302b7cb21edc9f9">&#9670;&nbsp;</a></span>piccolo_start()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void __time_critical_func() piccolo_start </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Start the Piccolo Task scheduler in handler mode. </p>
-<dl class="section return"><dt>Returns</dt><dd>Never!</dd></dl>
-<p>Start the second processor if multi-core mode is enabled. Switch to handler mode and begin the round robin scheduler.</p>
-<p >The scheduler starts with the task after the last task run by either core and looks for a task which is not running (on the other core) and not blocked. Along the way it checks if sleeping tasks or tasks blocked for signaling should be unblocked. The first task found ready to run, gets run with the preemption timer reset and armed if preemption is enabled. After the task runs the scheduler checks if it has ended. (Marked as a zombie.) If so, It is removed from the schedulers task list and sent to the garbage collector to free the task's memory.</p>
-<p >If no task is ready to run an idle task will be started to sleep for the minimum of the idle slice time or the smallest time remaining of any timeout. Sleep is the Pico sleep routine, so the core goes to sleep for power reduction. If the idle slice time is set to zero, idle will not run.</p>
-<dl class="section note"><dt>Note</dt><dd>Runs on <b>both</b> cores if multi-core is enabled </dd></dl>
+<p >After a reset, the processor is in thread mode. Switch to handler mode, so that the Piccolo OS kernel runs in handler mode, and to ensure the correct return from an exception/interrupt later when switching to a task. We make a dummy stack and arrange to route the service call exception back to ourselves! </p>
 
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
-<a id="ga3c2e64034366bf17fa665f61c655e176" name="ga3c2e64034366bf17fa665f61c655e176"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga3c2e64034366bf17fa665f61c655e176">&#9670;&nbsp;</a></span>kills</h2>
+<a id="gadd49d93bd49fb53059396876e809d706" name="gadd49d93bd49fb53059396876e809d706"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gadd49d93bd49fb53059396876e809d706">&#9670;&nbsp;</a></span>piccolo_os_task_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">uint32_t kills = 0</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
-<a id="gae7b8fb68f995198605f7bd383d581325" name="gae7b8fb68f995198605f7bd383d581325"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae7b8fb68f995198605f7bd383d581325">&#9670;&nbsp;</a></span>piccolo_os_task_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">struct <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a></td>
+          <td class="memname">** struct <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

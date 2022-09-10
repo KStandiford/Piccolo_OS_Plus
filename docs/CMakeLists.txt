@@ -30,7 +30,7 @@ if(Doxygen_FOUND)
         "${PROJECT_SOURCE_DIR}/piccolo_os.c" "${PROJECT_SOURCE_DIR}/piccolo_os_lock_core.c" 
         "${CMAKE_CURRENT_SOURCE_DIR}/*.in" "${CMAKE_CURRENT_SOURCE_DIR}/*.xml" 
         "${CMAKE_CURRENT_SOURCE_DIR}/*.dox" "${CMAKE_CURRENT_SOURCE_DIR}/*.md")
-    message(STATUS "${DEPENDS_LIST}")
+    #message(STATUS "${DEPENDS_LIST}")
     add_custom_command( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/html/index.html
         DEPENDS ${DEPENDS_LIST}    
     #    COMMAND Doxygen::doxygen ${CMAKE_CURRENT_SOURCE_DIR}/DoxyfileA

@@ -105,7 +105,7 @@ void piccolo_lock_yield();
  * By default this macro simply unlocks the spin lock, and then performs a WFE, but may be overridden
  * (e.g. to actually block the RTOS task).
  * 
- * **For Piccolo OS, yield if there is a valid task running, and then return.**
+ * **For Piccolo OS, if a valid task is running, yield. Then return.**
  *
  * \param lock the lock_core for the primitive which needs to block
  * \param save the uint32_t value that should be passed to spin_unlock when the spin lock is unlocked. (i.e. the `PRIMASK`
@@ -133,7 +133,7 @@ void piccolo_lock_yield();
  * By default this simply unlocks the spin lock, and then calls  best_effort_wfe_or_timeout
  * but may be overridden (e.g. to actually block the RTOS task with a timeout).
  *
- *  **For Piccolo OS, yield if there is a valid task running, and then return the timeout status.**
+ *  **For Piccolo OS, if a valid task is running, yield. Then return the timeout status.**
  * 
  * \param lock the lock_core for the primitive which needs to block
  * \param save the uint32_t value that should be passed to spin_unlock when the spin lock is unlocked. (i.e. the PRIMASK
@@ -157,7 +157,7 @@ void piccolo_lock_yield();
  * RTOS which is able to block the current task until the scheduler tick before
  * the given time)
  * 
- * **For Piccolo OS, yield if there is a valid task running, and then return.**
+ * **For Piccolo OS, if a valid task is running, yield. Then return.**
  *
  * \param until the absolute_time_t value
  * 

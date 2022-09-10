@@ -2,7 +2,7 @@
  * @file piccolo_os.h
  * @author Keith Standiford
  * @brief Piccolo OS Plus
- * @version 1.0
+ * @version 1.01
  * @date 2022-08-15
  * 
  *
@@ -16,8 +16,8 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Piccolo OS is a simple cooperative multi-tasking OS originally written by Gary Simms
- * (AKA garyexplains) as a teaching tool. 
+ * Piccolo OS is a simple cooperative multi-tasking OS originally written by 
+ * [Gary Sims](https://github.com/garyexplains) as a teaching tool. 
  */
 #ifndef PICCOLO_OS_H
 #define PICCOLO_OS_H
@@ -35,7 +35,7 @@ extern "C" {
  */
 
 /**
- * @brief Size of our user task stacks in 32 bit words. 
+ * @brief Size of a task stack in 32 bit words. 
  * @note Must be **even**, for exception frame stack alignment!
  * 
  */
@@ -59,7 +59,19 @@ extern "C" {
 #define PICCOLO_OS_MAX_IDLE 700
 
 /**
- * @brief enable/disable multi-core scheduling
+ * @brief If true, scheduler will not idle if tasks are blocking for signals.
+ * 
+ * If set to false, the scheduler will run the idle task for the minimum of
+ * PICCOLO_OS_MAX_IDLE or the smallest time remaining for any task with a timeout
+ * running. This will improve power consumption but potentially delay the response
+ * of any task waiting for a signal. This may make good sense for applications without
+ * serious response time concerns.
+ * 
+ */
+#define PICCOLO_OS_NO_IDLE_FOR_SIGNALS true
+
+/**
+ * @brief Enable/disable multi-core scheduling
  * 
 **/
 #define PICCOLO_OS_MULTICORE true
@@ -81,8 +93,8 @@ extern "C" {
  * @brief Piccolo OS task data structure
  * 
  */
-/// \cond force_doxygen_to_list
-typedef /**\endcond**/
+// \cond force_doxygen_to_list
+typedef /*\endcond**/
 struct piccolo_os_task_t {
     volatile uint32_t task_flags;               /**< Task Status **/
     struct piccolo_os_task_t *next_task;        /**< next task in scheduler chain **/
@@ -93,10 +105,7 @@ struct piccolo_os_task_t {
     volatile uint32_t signal_out;               /**< output values for the task's input signal channel **/
     uint32_t signal_limit;                      /**< maximum (-1) number of signals the task can queue **/
     uint32_t *stack_ptr;                        /**< the task stack pointer **/
-    uint32_t 
-    /// \cond doxy_skip
-        __attribute__((aligned(8)))/**\endcond**/
-        stack[PICCOLO_OS_STACK_SIZE];       /**< the task stack space **/
+    uint32_t __attribute__((aligned(8))) stack[PICCOLO_OS_STACK_SIZE];       /**< the task stack space **/
 }  piccolo_os_task_t;
 
 /**
@@ -117,12 +126,13 @@ struct {
 // Define Task Flag values
 enum piccolo_task_flag_values
 {
-    PICCOLO_TASK_RUNNING    = 0x1,
-    PICCOLO_TASK_BLOCKED    = 0x2,
-    PICCOLO_TASK_ZOMBIE     = 0x4,
-    PICCOLO_TASK_SLEEPING   = 0x8,
-    PICCOLO_TASK_GET_SIGNAL_BLOCKED     = 0x10,
-    PICCOLO_TASK_SEND_SIGNAL_BLOCKED    = 0x20,
+    PICCOLO_TASK_RUNNING    = 0x1,      ///< Task is running
+    PICCOLO_TASK_ZOMBIE     = 0x2,      ///< Task has ended and should be removed by the scheduler
+    PICCOLO_TASK_SLEEPING   = 0x4,      ///< Task has a timeout running
+    PICCOLO_TASK_GET_SIGNAL_BLOCKED     = 0x8,  ///< Task blocked getting signal
+    PICCOLO_TASK_SEND_SIGNAL_BLOCKED    = 0x10, ///< Task block sending signal
+    PICCOLO_TASK_BLOCKING = (PICCOLO_TASK_SLEEPING | PICCOLO_TASK_GET_SIGNAL_BLOCKED | PICCOLO_TASK_SEND_SIGNAL_BLOCKED) \
+                                        ///<Task blocked for some reason
 };
 /**@}**/
 /** @defgroup Cinter The Piccolo OS Plus APIs
@@ -150,7 +160,7 @@ void piccolo_start();
  * Once a task is running, it can yield the processor to the next task voluntarily. It can also 
  * suspend execution (sleep) for a time and allow other tasks to execute.
  * 
- * @Note To send a signal to a task, the sender must have the pointer to the task returned by `piccolo_create_task()`.
+ * @note To send a signal to a task, the sender must have the pointer to the task returned by `piccolo_create_task()`.
  * 
   */
 
@@ -178,7 +188,7 @@ __force_inline static void piccolo_yield(void) {
  * 
  */
 void piccolo_syscall(void);
-void piccolo_sleep(uint32_t ticks);
+void piccolo_sleep(uint32_t sleep_time_ms);
 void piccolo_sleep_until(absolute_time_t until);
 ///@}
 
@@ -186,7 +196,7 @@ void piccolo_sleep_until(absolute_time_t until);
  * 
  * Each task has a built in signal channel which can be used for inter-task synchronization. A channel can hold 
  * a specified number of signals. 
- * (The maximum is a #define value which can be as large as 2^31). Signals are only events which contain no data
+ * (The maximum is a \#define value which can be as large as 2^31). Signals are only events which contain no data
  * and do not occupy any memory. Signals can be sent to a task by another task, or by interrupt service handlers
  * or timer or alarm callback routines. (Though only tasks ought to try blocking!)
  */

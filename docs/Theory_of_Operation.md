@@ -91,18 +91,18 @@ is running the task! The solution is to keep track of which task is running on e
 The addition of dynamic task creation and deletion forced one major design change from `v1` and `v1.1`, and adds a few additional 
 concerns.
 
-### A task must be a struct
-In order to be dynamically added and deleted, tasks need to be represented as a `struct`, and the simplicity of an array of 
+### A task in now a struct
+In order to be dynamically added and deleted, tasks are now represented as a `struct`, and the simplicity of an array of 
 tasks had to be discarded. The scheduler uses a doubly linked (meaning forward and backward linked) list of tasks. This facilitates easy removal of a task from anywhere in the list, and easy addition of a new task at the end of the list.
 
 ### Protection of the structures
 As mentioned before, in a multi-core and pre-emptive scheduling environment we must not allow task creation, deletion or 
-scheduling to occur simultaneously, because these linked lists of structures would be corrupted. Therefore, all of these operations use the same spinlock as discussed above.
+scheduling to occur simultaneously, because the linked lists of task structures would be corrupted. Therefore, all of these operations use the same spinlock as discussed above.
 
 ### Use of malloc() and free()
 As discussed previously, `malloc()` and `free()` are task and core safe in Piccolo OS Plus, but *not* interrupt safe. The
 scheduler *is* an interrupt handler, so though it is responsible for removing tasks which have ended, *it cannot call `free()` to return the memory for the task struct*. Our solution is to let the scheduler place the discarded task onto another list (the 
-"zombie" list of dead tasks) and allow a special garbage collector task to return the memory using `free()`. Of course, the zombie list has to be protected using the same scheduler spin lock as before.
+"zombie" list of dead tasks) and allow a special garbage collector task to return the memory using `free()`. Of course, the zombie list has to be protected using the same scheduler spin lock as the task structures.
 
 # Implementation Discussions
 Here we talk about some of the implementation details in more depth. Topics include:
@@ -116,16 +116,16 @@ Here we talk about some of the implementation details in more depth. Topics incl
  piccolo_os_internals_t are reasonably obvious from the descriptions in the documentation, but a few deserve more information.
 
 ### The task data structure
- - `task_flags` is a logical 'or' of the bit masks from the enum \ref piccolo_task_flag_values. This is how tasks are marked as running or blocked. Note that a task is marked "blocked" and for what reason or reasons. For example, 
- a task waiting for a signal with timeout is blocked for *two* reasons! Resolving *either* will allow the task to run.
+ - `task_flags` is a logical 'or' of the bit masks from the enum \ref piccolo_task_flag_values. This is how tasks are marked as running or blocked. Note that a task can be marked blocked and for multiple reasons. For example, 
+ a task waiting for a signal with timeout is blocked for *two* reasons! Resolving *any reason* will allow the task to run. (And it is up to the task to sort things out.)
  - `task_sending_to` is the target task if the current task is blocked trying to send a signal.
 The scheduler can then check the target task
-to see if there is now room in its signal channel so the current task can be unbolcked.
+to see if there is now room in its signal channel so the current task can be unblocked.
 
 ### The internals data structure
  - `this_task[]` is how the Pico SDK interface routines find out which task is running on the current core. It is maintained
 current by the scheduler on each core. The entries must be initialized to their core number (`%this_task[i]=i`) before
- - `piccoloc_start()` is called or core1 is started for any other reason. When `main()` is started, both entries are 0. This is OK because core1 is not running. Calling `piccolo_init()` sets `this_task[1]=1`, completing the initialization. 
+ `piccoloc_start()` is called or core1 is started for any other reason. When `%main()` is started, both entries are 0. This is OK because core1 is not running. Calling `piccolo_init()` sets `this_task[1]=1`, completing the initialization. 
 
 ## The scheduler in more detail
 Here is where many of our concerns throughout are resolved. When `piccolo_start()` is called, it first does some final 
@@ -145,21 +145,21 @@ Then enter handler mode and begin the main scheduler loop. The main loop is:
         - set `current_task` and `this_task[core number]` to this task
         - unlock spinlock (the other scheduler will now ignore this task)
         - go to run the task
-    - Move to the next task, and keep searching. If we are out of tasks,
+    - Otherwise, move to the next task, and keep searching. If we are out of tasks,
         - unlock the spinlock
-        - if we can, run the idle task
+        - if allowed, run the idle task to sleep the core
         - return to the top of the main loop.
 - To run the task, start the Systick timer for preemption
 - Switch context to run the task
-- Resume when the task yields or is preempted, check if has ended and is marked as a zombie
+- Resume when the task yields or is preempted, check if the task has ended and is marked as a zombie
     - if it is a zombie
         - lock the spinlock
         - remove the task from the scheduler loop
-        - if it was the `current task` set `current task` to the task preceeding this one. This makes sure the schedulers start looking in the right place!
+        - if it was the `current task`, set `current task` to the task preceding this one. (This makes sure the schedulers start looking in the right place!)
         - add the dead task to the zombie list for the garbage collector
         - unlock the spinlock
-        - send a signal to the garbage collector to wake him up because he has work to do!
-    - otherwise, just mark the task as "not running"
+        - send a signal to wake up the garbage collector.
+    - otherwise the task was not a zombie, just mark it as "not running"
 - return to the top of the main loop
 
 ## The Garbage Collector
@@ -179,7 +179,7 @@ position of the old buffer pointers convey the information. We will describe how
 how we have adapted it for multiple senders.
 ### How signals work
 A signal channel contains two counters `IN` and `OUT`, and a `LIMIT` value. The sender only changes the `IN` value, and
-the receiver only changes the `OUT` value. As long as there is only one sender and one receiver, this implies that
+the receiver only changes the `OUT` value. As long as there is only one sender and one receiver, this guarantees that
 we are already task and core safe. Because the channel has a finite size, we also have a `LIMIT` value. `IN` and `OUT`
 are always incremented modulo the `LIMIT`, so for the following discussion, please assume that
 `IN+1` and `OUT+1` means `(IN+1)%%LIMIT` and `(OUT+1)%%LIMIT` respectively. So here is how to receive and send:

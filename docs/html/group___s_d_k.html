@@ -18,7 +18,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Piccolo OS Plus<span id="projectnumber">&#160;1.0</span>
+   <div id="projectname">Piccolo OS Plus<span id="projectnumber">&#160;1.01</span>
    </div>
    <div id="projectbrief">A feature rich extension of Piccolo OS</div>
   </td>
@@ -53,36 +53,36 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="define-members" name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gae28f1d974cf1f1b973127500a764245c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gae28f1d974cf1f1b973127500a764245c">lock_get_caller_owner_id</a>()&#160;&#160;&#160;((<a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a>) <a class="el" href="group___s_d_k.html#gaaa66c26838876a9e54bcae8da590e963">piccolo_lock_get_owner_id</a>())</td></tr>
+<tr class="memitem:gae28f1d974cf1f1b973127500a764245c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gae28f1d974cf1f1b973127500a764245c">lock_get_caller_owner_id</a>()&#160;&#160;&#160;((<a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a>) <a class="el" href="group___s_d_k.html#ga7c507be20308815bb5f772e7c0d0bac1">piccolo_lock_get_owner_id</a>())</td></tr>
 <tr class="memdesc:gae28f1d974cf1f1b973127500a764245c"><td class="mdescLeft">&#160;</td><td class="mdescRight">return the owner id for the caller.By default this returns the calling core number, but may be overridden (e.g. to return an RTOS task id)  <a href="group___s_d_k.html#gae28f1d974cf1f1b973127500a764245c">More...</a><br /></td></tr>
 <tr class="separator:gae28f1d974cf1f1b973127500a764245c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaea64ba43b0ff683739ba136fe5a2b29"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gaaea64ba43b0ff683739ba136fe5a2b29">lock_internal_spin_unlock_with_wait</a>(lock,  save)&#160;&#160;&#160;({spin_unlock((lock)-&gt;spin_lock, save);<a class="el" href="group___s_d_k.html#gae560cc4102ef37067af304fad1266209">piccolo_lock_wait</a>();})</td></tr>
+<tr class="memitem:gaaea64ba43b0ff683739ba136fe5a2b29"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gaaea64ba43b0ff683739ba136fe5a2b29">lock_internal_spin_unlock_with_wait</a>(lock,  save)&#160;&#160;&#160;({spin_unlock((lock)-&gt;spin_lock, save);<a class="el" href="group___s_d_k.html#ga2bc894698aed7f6f0d27d684c32f0032">piccolo_lock_wait</a>();})</td></tr>
 <tr class="memdesc:gaaea64ba43b0ff683739ba136fe5a2b29"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomically unlock the lock's spin lock, and wait for a notification.  <a href="group___s_d_k.html#gaaea64ba43b0ff683739ba136fe5a2b29">More...</a><br /></td></tr>
 <tr class="separator:gaaea64ba43b0ff683739ba136fe5a2b29"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga627a09221ed61634d6dfea6f406e104e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga627a09221ed61634d6dfea6f406e104e">lock_internal_spin_unlock_with_best_effort_wait_or_timeout</a>(lock,  save,  until)</td></tr>
 <tr class="memdesc:ga627a09221ed61634d6dfea6f406e104e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Atomically unlock the lock's spin lock, and wait for a notification or a timeout.  <a href="group___s_d_k.html#ga627a09221ed61634d6dfea6f406e104e">More...</a><br /></td></tr>
 <tr class="separator:ga627a09221ed61634d6dfea6f406e104e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga133eb482d67637b8b4e947dee5133513"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga133eb482d67637b8b4e947dee5133513">sync_internal_yield_until_before</a>(until)&#160;&#160;&#160;(<a class="el" href="group___s_d_k.html#ga26aa19be67673d59f6de635795f98716">piccolo_lock_yield</a>();)</td></tr>
+<tr class="memitem:ga133eb482d67637b8b4e947dee5133513"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga133eb482d67637b8b4e947dee5133513">sync_internal_yield_until_before</a>(until)&#160;&#160;&#160;(<a class="el" href="group___s_d_k.html#ga40d406f000def8d7b67bb29835a8e129">piccolo_lock_yield</a>();)</td></tr>
 <tr class="memdesc:ga133eb482d67637b8b4e947dee5133513"><td class="mdescLeft">&#160;</td><td class="mdescRight">yield to other processing until some time before the requested time  <a href="group___s_d_k.html#ga133eb482d67637b8b4e947dee5133513">More...</a><br /></td></tr>
 <tr class="separator:ga133eb482d67637b8b4e947dee5133513"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:gac6c18bcbef21ab2689ddb5b507401703"><td class="memItemLeft" align="right" valign="top">static __force_inline uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gac6c18bcbef21ab2689ddb5b507401703">get_interrupts_disabled</a> (void)</td></tr>
-<tr class="memdesc:gac6c18bcbef21ab2689ddb5b507401703"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get interrupt enable status.  <a href="group___s_d_k.html#gac6c18bcbef21ab2689ddb5b507401703">More...</a><br /></td></tr>
-<tr class="separator:gac6c18bcbef21ab2689ddb5b507401703"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaaa66c26838876a9e54bcae8da590e963"><td class="memItemLeft" align="right" valign="top"><a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a> __time_critical_func()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gaaa66c26838876a9e54bcae8da590e963">piccolo_lock_get_owner_id</a> ()</td></tr>
-<tr class="memdesc:gaaa66c26838876a9e54bcae8da590e963"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the ID (task struct address) of the running task.  <a href="group___s_d_k.html#gaaa66c26838876a9e54bcae8da590e963">More...</a><br /></td></tr>
-<tr class="separator:gaaa66c26838876a9e54bcae8da590e963"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae560cc4102ef37067af304fad1266209"><td class="memItemLeft" align="right" valign="top">void __time_critical_func()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gae560cc4102ef37067af304fad1266209">piccolo_lock_wait</a> (void)</td></tr>
-<tr class="memdesc:gae560cc4102ef37067af304fad1266209"><td class="mdescLeft">&#160;</td><td class="mdescRight">Yield if a valid task is running, and then return.  <a href="group___s_d_k.html#gae560cc4102ef37067af304fad1266209">More...</a><br /></td></tr>
-<tr class="separator:gae560cc4102ef37067af304fad1266209"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga7cf7b6b5d47c5ad95e4233d24b3e1c53"><td class="memItemLeft" align="right" valign="top">bool __time_critical_func()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">piccolo_lock_wait_until</a> (absolute_time_t timeout_timestamp)</td></tr>
-<tr class="memdesc:ga7cf7b6b5d47c5ad95e4233d24b3e1c53"><td class="mdescLeft">&#160;</td><td class="mdescRight">Yield if a valid task is running, then return the timeout status.  <a href="group___s_d_k.html#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">More...</a><br /></td></tr>
-<tr class="separator:ga7cf7b6b5d47c5ad95e4233d24b3e1c53"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga26aa19be67673d59f6de635795f98716"><td class="memItemLeft" align="right" valign="top">void __time_critical_func()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga26aa19be67673d59f6de635795f98716">piccolo_lock_yield</a> (void)</td></tr>
-<tr class="memdesc:ga26aa19be67673d59f6de635795f98716"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default idle routine for the lock system. We will yield if a valid task is running.  <a href="group___s_d_k.html#ga26aa19be67673d59f6de635795f98716">More...</a><br /></td></tr>
-<tr class="separator:ga26aa19be67673d59f6de635795f98716"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga0e44af2b3c2784da69d9f3700d58030c"><td class="memItemLeft" align="right" valign="top">static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga0e44af2b3c2784da69d9f3700d58030c">get_interrupts_disabled</a> (void)</td></tr>
+<tr class="memdesc:ga0e44af2b3c2784da69d9f3700d58030c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get interrupt enable status.  <a href="group___s_d_k.html#ga0e44af2b3c2784da69d9f3700d58030c">More...</a><br /></td></tr>
+<tr class="separator:ga0e44af2b3c2784da69d9f3700d58030c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7c507be20308815bb5f772e7c0d0bac1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a>()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga7c507be20308815bb5f772e7c0d0bac1">piccolo_lock_get_owner_id</a> ()</td></tr>
+<tr class="memdesc:ga7c507be20308815bb5f772e7c0d0bac1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the ID (task struct address) of the running task.  <a href="group___s_d_k.html#ga7c507be20308815bb5f772e7c0d0bac1">More...</a><br /></td></tr>
+<tr class="separator:ga7c507be20308815bb5f772e7c0d0bac1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga2bc894698aed7f6f0d27d684c32f0032"><td class="memItemLeft" align="right" valign="top">void()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga2bc894698aed7f6f0d27d684c32f0032">piccolo_lock_wait</a> (void)</td></tr>
+<tr class="memdesc:ga2bc894698aed7f6f0d27d684c32f0032"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a valid task is running, yield. Then return.  <a href="group___s_d_k.html#ga2bc894698aed7f6f0d27d684c32f0032">More...</a><br /></td></tr>
+<tr class="separator:ga2bc894698aed7f6f0d27d684c32f0032"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabccb1b699dc1256a935a2d46ba2ce6a3"><td class="memItemLeft" align="right" valign="top">bool()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#gabccb1b699dc1256a935a2d46ba2ce6a3">piccolo_lock_wait_until</a> (absolute_time_t timeout_timestamp)</td></tr>
+<tr class="memdesc:gabccb1b699dc1256a935a2d46ba2ce6a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">If a valid task is running, yield. Then return the timeout status.  <a href="group___s_d_k.html#gabccb1b699dc1256a935a2d46ba2ce6a3">More...</a><br /></td></tr>
+<tr class="separator:gabccb1b699dc1256a935a2d46ba2ce6a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga40d406f000def8d7b67bb29835a8e129"><td class="memItemLeft" align="right" valign="top">void()&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___s_d_k.html#ga40d406f000def8d7b67bb29835a8e129">piccolo_lock_yield</a> (void)</td></tr>
+<tr class="memdesc:ga40d406f000def8d7b67bb29835a8e129"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default idle routine for the lock system. If a valid task is running, yield. Then return.  <a href="group___s_d_k.html#ga40d406f000def8d7b67bb29835a8e129">More...</a><br /></td></tr>
+<tr class="separator:ga40d406f000def8d7b67bb29835a8e129"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Macro Definition Documentation</h2>
 <a id="gae28f1d974cf1f1b973127500a764245c" name="gae28f1d974cf1f1b973127500a764245c"></a>
@@ -95,7 +95,7 @@ Functions</h2></td></tr>
           <td class="memname">#define lock_get_caller_owner_id</td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
-          <td>&#160;&#160;&#160;((<a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a>) <a class="el" href="group___s_d_k.html#gaaa66c26838876a9e54bcae8da590e963">piccolo_lock_get_owner_id</a>())</td>
+          <td>&#160;&#160;&#160;((<a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a>) <a class="el" href="group___s_d_k.html#ga7c507be20308815bb5f772e7c0d0bac1">piccolo_lock_get_owner_id</a>())</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -137,15 +137,15 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">    ({ \</div>
-<div class="line">    spin_unlock((lock)-&gt;spin_lock,save); <a class="code hl_function" href="group___s_d_k.html#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">piccolo_lock_wait_until</a>(until);                       \</div>
+<div class="line">    spin_unlock((lock)-&gt;spin_lock,save); <a class="code hl_function" href="group___s_d_k.html#gabccb1b699dc1256a935a2d46ba2ce6a3">piccolo_lock_wait_until</a>(until);                       \</div>
 <div class="line">})</div>
-<div class="ttc" id="agroup___s_d_k_html_ga7cf7b6b5d47c5ad95e4233d24b3e1c53"><div class="ttname"><a href="group___s_d_k.html#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">piccolo_lock_wait_until</a></div><div class="ttdeci">bool piccolo_lock_wait_until(absolute_time_t timeout_timestamp)</div><div class="ttdoc">Yield if a valid task is running, then return the timeout status.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:78</div></div>
+<div class="ttc" id="agroup___s_d_k_html_gabccb1b699dc1256a935a2d46ba2ce6a3"><div class="ttname"><a href="group___s_d_k.html#gabccb1b699dc1256a935a2d46ba2ce6a3">piccolo_lock_wait_until</a></div><div class="ttdeci">bool piccolo_lock_wait_until(absolute_time_t timeout_timestamp)</div><div class="ttdoc">If a valid task is running, yield. Then return the timeout status.</div><div class="ttdef"><b>Definition:</b> piccolo_os_lock_core.c:78</div></div>
 </div><!-- fragment -->
 <p>Atomically unlock the lock's spin lock, and wait for a notification or a timeout. </p>
 <p ><em>Atomic</em> here refers to the fact that it should not be possible for a concurrent lock_internal_spin_unlock_with_notify to insert itself between the spin unlock and this wait in a way that the wait does not see the notification (i.e. causing a missed notification). In other words this method should always wake up in response to a lock_internal_spin_unlock_with_notify for the same lock, which completes after this call starts.</p>
 <p >In an ideal implementation, this method would return exactly after the corresponding lock_internal_spin_unlock_with_notify has subsequently been called on the same lock instance or the timeout has been reached, however this method is free to return at <em>any</em> point before that; this macro is <em>always</em> used in a loop which locks the spin lock, checks the internal locking primitive state and then waits again if the calling thread should not proceed.</p>
 <p >By default this simply unlocks the spin lock, and then calls best_effort_wfe_or_timeout but may be overridden (e.g. to actually block the RTOS task with a timeout).</p>
-<p ><b>For Piccolo OS, yield if there is a valid task running, and then return the timeout status.</b></p>
+<p ><b>For Piccolo OS, if a valid task is running, yield. Then return the timeout status.</b></p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">lock</td><td>the lock_core for the primitive which needs to block </td></tr>
@@ -179,7 +179,7 @@ Functions</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;({spin_unlock((lock)-&gt;spin_lock, save);<a class="el" href="group___s_d_k.html#gae560cc4102ef37067af304fad1266209">piccolo_lock_wait</a>();})</td>
+          <td></td><td>&#160;&#160;&#160;({spin_unlock((lock)-&gt;spin_lock, save);<a class="el" href="group___s_d_k.html#ga2bc894698aed7f6f0d27d684c32f0032">piccolo_lock_wait</a>();})</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -188,7 +188,7 @@ Functions</h2></td></tr>
 <p ><em>Atomic</em> here refers to the fact that it should not be possible for a concurrent lock_internal_spin_unlock_with_notify to insert itself between the spin unlock and this wait in a way that the wait does not see the notification (i.e. causing a missed notification). In other words this method should always wake up in response to a lock_internal_spin_unlock_with_notify for the same lock, which completes after this call starts.</p>
 <p >In an ideal implementation, this method would return exactly after the corresponding lock_internal_spin_unlock_with_notify has subsequently been called on the same lock instance, however this method is free to return at <em>any</em> point before that; this macro is <em>always</em> used in a loop which locks the spin lock, checks the internal locking primitive state and then waits again if the calling thread should not proceed.</p>
 <p >By default this macro simply unlocks the spin lock, and then performs a WFE, but may be overridden (e.g. to actually block the RTOS task).</p>
-<p ><b>For Piccolo OS, yield if there is a valid task running, and then return.</b></p>
+<p ><b>For Piccolo OS, if a valid task is running, yield. Then return.</b></p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">lock</td><td>the lock_core for the primitive which needs to block </td></tr>
@@ -210,7 +210,7 @@ Functions</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">until</td><td>)</td>
-          <td>&#160;&#160;&#160;(<a class="el" href="group___s_d_k.html#ga26aa19be67673d59f6de635795f98716">piccolo_lock_yield</a>();)</td>
+          <td>&#160;&#160;&#160;(<a class="el" href="group___s_d_k.html#ga40d406f000def8d7b67bb29835a8e129">piccolo_lock_yield</a>();)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -218,7 +218,7 @@ Functions</h2></td></tr>
 <p>yield to other processing until some time before the requested time </p>
 <p >This method is provided for cases where the caller has no useful work to do until the specified time.</p>
 <p >By default this method does nothing, however it can be overridden (for example by an RTOS which is able to block the current task until the scheduler tick before the given time)</p>
-<p ><b>For Piccolo OS, yield if there is a valid task running, and then return.</b></p>
+<p ><b>For Piccolo OS, if a valid task is running, yield. Then return.</b></p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">until</td><td>the absolute_time_t value </td></tr>
@@ -229,8 +229,8 @@ Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="gac6c18bcbef21ab2689ddb5b507401703" name="gac6c18bcbef21ab2689ddb5b507401703"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gac6c18bcbef21ab2689ddb5b507401703">&#9670;&nbsp;</a></span>get_interrupts_disabled()</h2>
+<a id="ga0e44af2b3c2784da69d9f3700d58030c" name="ga0e44af2b3c2784da69d9f3700d58030c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga0e44af2b3c2784da69d9f3700d58030c">&#9670;&nbsp;</a></span>get_interrupts_disabled()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -239,7 +239,7 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static __force_inline uint32_t get_interrupts_disabled </td>
+          <td class="memname">static uint32_t get_interrupts_disabled </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -258,14 +258,14 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="gaaa66c26838876a9e54bcae8da590e963" name="gaaa66c26838876a9e54bcae8da590e963"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaaa66c26838876a9e54bcae8da590e963">&#9670;&nbsp;</a></span>piccolo_lock_get_owner_id()</h2>
+<a id="ga7c507be20308815bb5f772e7c0d0bac1" name="ga7c507be20308815bb5f772e7c0d0bac1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7c507be20308815bb5f772e7c0d0bac1">&#9670;&nbsp;</a></span>piccolo_lock_get_owner_id()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a> __time_critical_func() piccolo_lock_get_owner_id </td>
+          <td class="memname"><a class="el" href="piccolo__os__lock__core_8h.html#a7e5b614312aabaada704b6a2350d39bc">lock_owner_id_t</a>() piccolo_lock_get_owner_id </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -275,18 +275,18 @@ Functions</h2></td></tr>
 
 <p>Get the ID (task struct address) of the running task. </p>
 <dl class="section return"><dt>Returns</dt><dd>lock_owner_id_t Task ID to use as lock owner</dd></dl>
-<p>If piccolo_os is <em>not</em> started (start hasn't yet been called), return the core number. Otherwise, return the task ID of the running task. Piccolo_init sets these to the core number as well, since even if the scheduler is running it <em>may not</em> have yet selected a task to run. </p>
+<p>If piccolo_os is <em>not</em> started (<code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> hasn't yet been called), return the core number. Otherwise, return the task ID of the running task. <code>Piccolo_init()</code> sets these to the core number as well, since even if the scheduler is running it <em>may not</em> have yet selected a task to run. </p>
 
 </div>
 </div>
-<a id="gae560cc4102ef37067af304fad1266209" name="gae560cc4102ef37067af304fad1266209"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gae560cc4102ef37067af304fad1266209">&#9670;&nbsp;</a></span>piccolo_lock_wait()</h2>
+<a id="ga2bc894698aed7f6f0d27d684c32f0032" name="ga2bc894698aed7f6f0d27d684c32f0032"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga2bc894698aed7f6f0d27d684c32f0032">&#9670;&nbsp;</a></span>piccolo_lock_wait()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void __time_critical_func() piccolo_lock_wait </td>
+          <td class="memname">void() piccolo_lock_wait </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -295,19 +295,19 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Yield if a valid task is running, and then return. </p>
+<p>If a valid task is running, yield. Then return. </p>
 <p >Remember the SDK caller checks anyway, so if we don't have a valid task running we will just return (and we will spin in a loop with the SDK). </p>
 
 </div>
 </div>
-<a id="ga7cf7b6b5d47c5ad95e4233d24b3e1c53" name="ga7cf7b6b5d47c5ad95e4233d24b3e1c53"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga7cf7b6b5d47c5ad95e4233d24b3e1c53">&#9670;&nbsp;</a></span>piccolo_lock_wait_until()</h2>
+<a id="gabccb1b699dc1256a935a2d46ba2ce6a3" name="gabccb1b699dc1256a935a2d46ba2ce6a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gabccb1b699dc1256a935a2d46ba2ce6a3">&#9670;&nbsp;</a></span>piccolo_lock_wait_until()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool __time_critical_func() piccolo_lock_wait_until </td>
+          <td class="memname">bool() piccolo_lock_wait_until </td>
           <td>(</td>
           <td class="paramtype">absolute_time_t&#160;</td>
           <td class="paramname"><em>timeout_timestamp</em></td><td>)</td>
@@ -316,7 +316,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Yield if a valid task is running, then return the timeout status. </p>
+<p>If a valid task is running, yield. Then return the timeout status. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">timeout_timestamp</td><td></td></tr>
@@ -330,14 +330,14 @@ false if the timeout has not expired</dd></dl>
 
 </div>
 </div>
-<a id="ga26aa19be67673d59f6de635795f98716" name="ga26aa19be67673d59f6de635795f98716"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ga26aa19be67673d59f6de635795f98716">&#9670;&nbsp;</a></span>piccolo_lock_yield()</h2>
+<a id="ga40d406f000def8d7b67bb29835a8e129" name="ga40d406f000def8d7b67bb29835a8e129"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga40d406f000def8d7b67bb29835a8e129">&#9670;&nbsp;</a></span>piccolo_lock_yield()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void __time_critical_func() piccolo_lock_yield </td>
+          <td class="memname">void() piccolo_lock_yield </td>
           <td>(</td>
           <td class="paramtype">void&#160;</td>
           <td class="paramname"></td><td>)</td>
@@ -346,7 +346,7 @@ false if the timeout has not expired</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Default idle routine for the lock system. We will yield if a valid task is running. </p>
+<p>Default idle routine for the lock system. If a valid task is running, yield. Then return. </p>
 
 </div>
 </div>
