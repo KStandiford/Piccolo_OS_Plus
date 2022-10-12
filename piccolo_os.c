@@ -2,8 +2,8 @@
  * @file piccolo_os.c
  * @author Keith Standiford
  * @brief Piccolo OS Plus
- * @version 1.01
- * @date 2022-08-15
+ * @version 1.02
+ * @date 2022-10-12
  * 
  *
  * @copyright Copyright (C) 2022 Keith Standiford
@@ -62,7 +62,7 @@ piccolo_os_internals_t piccolo_ctx;
  * (or other tasks) where to send signals.
  * 
  * @note Will return the core number before `piccolo_start` is running on that core. But if you 
- * @note don't call this except inside a task, you will always get a valid task ID.
+ * don't call this except inside a task, you will always get a valid task ID.
  */
 piccolo_os_task_t* piccolo_get_task_id(){
     piccolo_os_task_t* task;
@@ -72,7 +72,7 @@ piccolo_os_task_t* piccolo_get_task_id(){
     // not preempted and switched to a different core during the task lookup.
     interrupts = save_and_disable_interrupts();
     asm volatile("": : :"memory");
-    task = ( piccolo_os_task_t*) piccolo_ctx.this_task[get_core_num()]; // discard volitile status!
+    task = ( piccolo_os_task_t*) piccolo_ctx.this_task[get_core_num()]; // discard volatile status!
     asm volatile("": : :"memory");
     restore_interrupts(interrupts);
     return task;
@@ -101,7 +101,7 @@ piccolo_os_task_t* piccolo_get_task_id(){
  * See also:
  * http://infocenter.arm.com/help/index.jsp?topic=/com.arm.doc.dui0552a/Babefdjc.html
  * 
- * \note The starting arguement is placed in R0, but only used internally for the totally fake idle task.
+ * \note The starting argument is placed in R0, but this is only used internally for the totally fake idle task.
  */
 uint32_t *__piccolo_os_create_task(uint32_t *task_stack,
             void (*pointer_to_task_function)(void), uint32_t starting_argument) {
@@ -147,10 +147,10 @@ uint32_t *__piccolo_os_create_task(uint32_t *task_stack,
 }
 
 /**
- * @brief Create a new task and initialize it's stack.
+ * @brief Create a new task and initialize its stack.
  * 
  * @param pointer_to_task_function The task function to call initially
- * @return Task identifier (Pointer ti task structure) or 0 if create failed
+ * @return Task identifier (Pointer to task structure) or 0 if create failed
  * 
  * Allocates a new task and initializes its stack to the start of the given function.
  * Inserts the task at the end of the scheduler task list.
@@ -275,7 +275,7 @@ void piccolo_sleep_until(absolute_time_t until) {
  * If there is no room for the signal, return the error unless blocking was requested.
  * If blocking is necessary, start a timeout as well, if one was requested.
  * 
- * @note Since multiple senders are allowed, we must grab the spinlock. 
+ * @note Since multiple senders are allowed, we must use the spinlock. 
  */
 int32_t __piccolo_send_signal(piccolo_os_task_t* task,bool block, uint32_t timeout_ms){
     uint32_t lock, inptr, flags; 
@@ -366,7 +366,7 @@ inline int32_t piccolo_send_signal_blocking_timeout(piccolo_os_task_t* toTask,ui
  * 
  * @param block true if blocking on send
  * @param timeout_ms non zero if timeout enabled on blocking
- * @param get_all if true, get ALL signal available. Otherwise just get one. 
+ * @param get_all if true, get ALL signals available. Otherwise just get one. 
  * @return Number of signals received. Can be zero on timeout or non-blocking
  * \ingroup Intern
  * Get a signal for the current task. Return the number received.
@@ -452,10 +452,10 @@ inline int32_t piccolo_get_signal_blocking() {
     return __piccolo_get_signal(true, 0, false);
 }
 /**
- * @brief Attempt to get a signal. If none were available, block with a timeout until one arrives.
+ * @brief Attempt to get a signal. If none are available, block with a timeout until one arrives.
  * 
  * @param timeout_ms non zero if timeout enabled on blocking
- * @return Number of signals received. Will be zero is timeout occurred.
+ * @return Number of signals received. Will be zero if timeout occurred.
  * 
  */
 inline int32_t piccolo_get_signal_blocking_timeout(uint32_t timeout_ms){
@@ -475,7 +475,7 @@ inline int32_t piccolo_get_signal_all(){
 }
 
 /**
- * @brief Get all the signals available. If none were available, block until one arrives.
+ * @brief Get all the signals available. If none are available, block until one arrives.
  * 
  * @return Number of signals received
  * 
@@ -486,7 +486,7 @@ inline int32_t piccolo_get_signal_all_blocking(){
     return __piccolo_get_signal(true, 0, true);
 }
 /**
- * @brief Get all the signals available. If none were available, block with a timeout until one arrives.
+ * @brief Get all the signals available. If none are available, block with a timeout until one arrives.
  * 
  * @param timeout_ms Time in ms to wait for a signal to arrive
  * 
@@ -507,9 +507,9 @@ uint32_t kills = 0;
  * \ingroup Intern
  * The task is created during the scheduler start-up on core 0.
  * When it runs, it tries to free the space for all the dead tasks on 
- * the zombies list. (The scheduler cannot call free, because it
+ * the zombies list. (The scheduler cannot call `free()`, because it
  * is an interrupt handler and would break the mutex that protects
- * free and malloc). 
+ * `free()` and `malloc()`). 
  * 
  */
 void __piccolo_garbage_man(void) {
@@ -568,7 +568,7 @@ void piccolo_init() {
         piccolo_ctx.current_task = NULL;
         piccolo_ctx.zombies = NULL;
 
-        // claim the spinlock, initialize it and save it's instance
+        // claim the spinlock, initialize it and save its instance
         spin_lock_claim(PICCOLO_SPIN_LOCK_ID);
         piccolo_ctx.piccolo_lock = spin_lock_init(PICCOLO_SPIN_LOCK_ID);
 
@@ -610,18 +610,17 @@ __attribute__ ((noinline)) void __piccolo_idle( int32_t uSec)  {
 }
 
 /**
- * @brief Core 1 code to initialize and immediately start the piccolo scheduler
+ * @brief Core 1 code to initialize and immediately start the piccolo scheduler on core 1.
  * \ingroup Intern
  * 
  * Remember that the `piccolo_init()` checks the core number and does not
  * setup the data structures or the interrupt vector table if it is not core 0.
  * `piccolo_start()` takes similar precautions.
- * The scheduler should run fine on both cores at once.
+ * The scheduler will run on both cores at once.
  * 
  */
 
 void __piccolo_start_core1(void) {
-//    printf("Hello from Core %d\n",get_core_num());
     piccolo_init();
     piccolo_start();
     return;   // never happens
@@ -638,12 +637,12 @@ void __piccolo_start_core1(void) {
  * 
  * The scheduler starts with the task after the last task run by either core
  * and looks for a task which is not running (on the other core) and not blocked. Along the way it checks
- * if sleeping tasks or tasks blocked for signaling should be unblocked. The first task found ready to run, gets run
- * with the preemption timer reset and armed if preemption is enabled. After the task runs the
+ * if sleeping tasks or tasks blocked for signaling should be unblocked. The first task found ready to run gets run,
+ * with the preemption timer reset and armed if preemption is enabled. After the task yields or is preempted, the
  * scheduler checks if it has ended. (Marked as a zombie.) If so, the task is
  * removed from the scheduler's task list and sent to the garbage collector to free the task's memory.
  * 
- * If no task is ready to run an idle task will be started to sleep for the minimum of \ref PICCOLO_OS_MAX_IDLE
+ * If no task is ready to run, an idle task will be started to sleep for the minimum of \ref PICCOLO_OS_MAX_IDLE
  * or the smallest time remaining of any timeout. Sleep is the Pico sleep
  * routine, so the core goes to sleep for power reduction. If \ref PICCOLO_OS_MAX_IDLE is set to zero, 
  * idle will not run. 

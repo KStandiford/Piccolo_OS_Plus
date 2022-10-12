@@ -47,7 +47,7 @@ extern "C" {
 /**
  * @brief The OS time slice, in microseconds 
  * 
-    Setting time slice to zero will disable Systick and preemptive scheduling!
+    Setting time slice to zero will disable preemptive scheduling!
 */
 #define PICCOLO_OS_TIME_SLICE 1000
 /**
@@ -59,7 +59,7 @@ extern "C" {
 #define PICCOLO_OS_MAX_IDLE 700
 
 /**
- * @brief If true, scheduler will not idle if tasks are blocking for signals.
+ * @brief If true, the scheduler will not idle (sleep) if tasks are blocking for signals.
  * 
  * If set to false, the scheduler will run the idle task for the minimum of
  * PICCOLO_OS_MAX_IDLE or the smallest time remaining for any task with a timeout
@@ -103,7 +103,7 @@ struct piccolo_os_task_t {
     absolute_time_t wakeup;                     /**< end of sleep time or timeout **/
     volatile uint32_t signal_in;                /**< input values for the task's input signal channel **/
     volatile uint32_t signal_out;               /**< output values for the task's input signal channel **/
-    uint32_t signal_limit;                      /**< maximum (-1) number of signals the task can queue **/
+    uint32_t signal_limit;                      /**< maximum number of signals (+1) the task can queue **/
     uint32_t *stack_ptr;                        /**< the task stack pointer **/
     uint32_t __attribute__((aligned(8))) stack[PICCOLO_OS_STACK_SIZE];       /**< the task stack space **/
 }  piccolo_os_task_t;
@@ -132,7 +132,7 @@ enum piccolo_task_flag_values
     PICCOLO_TASK_GET_SIGNAL_BLOCKED     = 0x8,  ///< Task blocked getting signal
     PICCOLO_TASK_SEND_SIGNAL_BLOCKED    = 0x10, ///< Task block sending signal
     PICCOLO_TASK_BLOCKING = (PICCOLO_TASK_SLEEPING | PICCOLO_TASK_GET_SIGNAL_BLOCKED | PICCOLO_TASK_SEND_SIGNAL_BLOCKED) \
-                                        ///<Task blocked for some reason
+                                        ///<Mask to detect task blocked for some reason
 };
 /**@}**/
 /** @defgroup Cinter The Piccolo OS Plus APIs

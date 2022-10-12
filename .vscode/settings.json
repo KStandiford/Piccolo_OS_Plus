@@ -18,7 +18,7 @@
     },
     "cmake.buildBeforeRun": false,
     "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-    "cortex-debug.openocdPath": "C:\\VSARM\\OpenOCD-20211118-0.11.0\\bin\\openocd.exe",
+    "cortex-debug.openocdPath": "C:/VSARM/nowOpenOCD/openocd.exe",
     "cortex-debug.variableUseNaturalFormat": false,
     "cortex-debug.registerUseNaturalFormat": true,
     "files.associations": {

@@ -61,8 +61,8 @@ the next task! We can solve this by making sure that the scheduler specifically 
 and then clears any pending Systick exceptions. The timer can then be restarted when the next task is run.
 
 ## Multi-core operation
-The primary concern with multi-core operation is to prevent both cores from trying to simultanously modify the same data.
-While we have made this possible for tasks and the SDK in the implementation of preemption, we need to take additional steps
+The primary concern with multi-core operation is to prevent both cores from trying to simultaneously modify the same data.
+While we have made this safe for tasks and the SDK in the implementation of preemption, we need to take additional steps
 to protect the scheduler and and certain other task callable functions, since all can run on both cores.
 
 ### Protecting the scheduler
@@ -116,7 +116,7 @@ Here we talk about some of the implementation details in more depth. Topics incl
  piccolo_os_internals_t are reasonably obvious from the descriptions in the documentation, but a few deserve more information.
 
 ### The task data structure
- - `task_flags` is a logical 'or' of the bit masks from the enum \ref piccolo_task_flag_values. This is how tasks are marked as running or blocked. Note that a task can be marked blocked and for multiple reasons. For example, 
+ - `task_flags` is a logical 'or' of the bit masks from the enum \ref piccolo_task_flag_values. This is how tasks are marked as running or blocked. Note that a task can be marked blocked for multiple reasons. For example, 
  a task waiting for a signal with timeout is blocked for *two* reasons! Resolving *any reason* will allow the task to run. (And it is up to the task to sort things out.)
  - `task_sending_to` is the target task if the current task is blocked trying to send a signal.
 The scheduler can then check the target task
@@ -151,7 +151,7 @@ Then enter handler mode and begin the main scheduler loop. The main loop is:
         - return to the top of the main loop.
 - To run the task, start the Systick timer for preemption
 - Switch context to run the task
-- Resume when the task yields or is preempted, check if the task has ended and is marked as a zombie
+- Resume when the task yields or is preempted. Check if the task has ended and is marked as a zombie
     - if it is a zombie
         - lock the spinlock
         - remove the task from the scheduler loop
@@ -174,7 +174,7 @@ and should free space as soon as possible. It sits in the following loop:
 
 ## Signals
 Signal channels are based on an old technique called circular buffering which required no synchronization 
-primatives at all for a data producer and consumer to cooperate. In our case, we remove the data buffer and let the 
+primitives at all for a data producer and consumer to cooperate. In our case, we remove the data buffer and let the 
 position of the old buffer pointers convey the information. We will describe how this works, and then discuss
 how we have adapted it for multiple senders.
 ### How signals work
@@ -196,7 +196,7 @@ always updated correctly. Currently they use the same spinlock as the scheduler,
 the send routines and the scheduler do not actually modify any of the same variables.
 
 # Pitfalls - Beware a few things
-Just a couple of tips to maybe save some grief
+Just a couple of tips to maybe save some grief!
 ## Don't do this in interrupt service routines or timer callbacks
 Here are a few things you shouldn't do in interrupt handlers or timer callback routines. Some are instantly fatal, 
 others may actually work *sometimes* but be horribly hard to find when they go wrong.
@@ -221,5 +221,5 @@ initialization or in another task and send it a signal or use an SDK method like
 # About Core 1
 You can configure Piccolo OS Plus to not use multi-core and then go ahead and use Core 1 as you please. All the SDK 
 mechanisms and methods will be available. (Piccolo OS does not use the FIFOs, etc., and will NOT start core 1). All of the
-SDK sychronization mechanisms will also work between the cores. You can even send signals from core 1 to tasks running 
+SDK synchronization mechanisms will also work between the cores. You can even send signals from core 1 to tasks running 
 under Piccolo OS on core 0. Just remember to call `%piccolo_init()` in `main()` **before** you start core 1! Otherwise the SDK integration may break.

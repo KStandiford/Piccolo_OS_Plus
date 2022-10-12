@@ -15,7 +15,7 @@ and small enough to easily learn to use. The added features are:
 - Task signalling with optional blocking and timeouts on sending or receiving
 - `piccolo_sleep()` blocks rather than spinning until the timer expires
 - An idle task which sleeps the processor to reduce power consumption
-- Full integration with Pico SDK synchronization functionaliy like mutexes and semaphores. (Also present in v1.1)
+- Full integration with Pico SDK synchronization functionality like mutexes and semaphores. (Also present in v1.1)
 
 While Piccolo OS Plus is still reasonably simple, the feature set expansion and complications of multi-core operation 
 made it a bit too complex to be a simple teaching tool, so with Gary's permission and encouragement, it is presented here.
@@ -32,18 +32,18 @@ A _task_ (i.e. _user task_) is a function that is run by Piccolo OS in a round-r
 the kernal.
 
 The _kernel_ (or _scheduler_) is `piccolo_start()` which is called by `main()` and never returns. In the multi-core environment,
-the scheduler runs simultaously on _both_ cores. Tasks are created during initialization (before `piccolo_start()` is called) or
+the scheduler runs simultaneously on _both_ cores. Tasks are created during initialization (before `piccolo_start()` is called) or
 may be created by another task during its execution. The scheduler (or schedulers) 
 picks the next task that can be run (in a round-robin fashion), and transfers control to that task at the precise point 
 where it left off execution during its last "turn" to run. A task may cooperatively relinquish control to the scheduler when 
-it needs to pause or reaches a convenient point or the scheduler may pre-emptively "seize" control if the task has used its
+it needs to pause or reaches a convenient point or the scheduler may preemptively "seize" control if the task has used its
 allocated slice of computing time. At that point, the scheduler moves on to the next task available to run. The details of this 
 process are described in the `Theory of Operation` and 
 [Piccolo V1.1](https://github.com/garyexplains/piccolo_os_v1.1/blob/main/README.md) tabs of the documentation.
 
 ## Overview of Key New Features
 ### Pre-emptive Scheduling
-Without pre-emptive scheduling (ie. Picollo OS v1), a task would continue to execute until it voluntarily yielded the processor 
+Without pre-emptive scheduling (ie. Piccolo OS v1), a task would continue to execute until it voluntarily yielded the processor 
 back to the scheduler. A compute intensive (or uncooperative) task could keep the processor too long and delay other tasks too much. 
 (Indeed, the task could keep the processor forever, preventing any other task from running.) For pre-emptive scheduling, the 
 kernal sets a timer 
@@ -51,7 +51,7 @@ when it starts a task, and stops the task when the timer expires if the task fai
 and improves the system response time overall.
 
 ### Multi-core Operation with an Idle Task
-Running the kernal on both cores simply allows two tasks to execute simultanously, with each processor choosing the next task 
+Running the kernal on both cores simply allows two tasks to execute simultaneously, with each processor choosing the next task 
 as soon as its current task yields or is preempted. A task may be executed on either core. (But not both at once!) 
 
 The idle task allows the processor to actually sleep if there are no tasks 
@@ -108,8 +108,9 @@ will work
 and C++ will also run just fine. See more details in the `Theory of Operation` tab in the documentation.
 
 ## Build Instructions
-Make sure you have the Pico C/C++ SDK installed and working on your machine. [Getting started with Raspberry Pi Pico is
-the best place to start.](https://datasheets.raspberrypi.org/pico/getting-started-with-pico.pdf)
+Make sure you have the Pico C/C++ SDK installed and working on your machine. 
+[Getting started with Raspberry Pi Pico](https://datasheets.raspberrypi.org/pico/getting-started-with-pico.pdf)
+is the best place to start.
 
 You need to have PICO_SDK_PATH defined, e.g. `export PICO_SDK_PATH=/home/pi/pico/pico-sdk/`
 
@@ -152,3 +153,6 @@ the expense of power consumption. This behavior can be disabled by setting PICCO
 `piccolo_os.h` for lower power consumption if rapid response time is not critical.
 - Cleaned up the timing reports from `piccolo_os_demo`.
 - Numerous small documentation fixes.
+
+## Version 1.02
+- Fixed yet more typos in the documentation.

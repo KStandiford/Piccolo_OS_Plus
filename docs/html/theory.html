@@ -45,7 +45,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><p ><a class="anchor" id="md_C__Users_Keith_source_repos_piccolo_os_plus_docs_Theory_of_Operation"></a>In this section we will explore some of the basic concepts and implementation decisions in Piccolo OS Plus. Since Piccolo OS Plus is an extension of previous work, we will often only talk about the differences, so reviews of <a href="https://github.com/garyexplains/piccolo_os_v1">Piccolo OS v1</a> and <a href="https://github.com/garyexplains/piccolo_os_v1.1">Piccolo OS v1.1</a> may be helpful.</p>
 <p >We will first discuss some of the implications of various feature choices, and then go on to some more detailed implementation explanations. At the end, we will discuss a couple of things NOT to do, to maybe save some grief.</p>
-<h1><a class="anchor" id="autotoc_md43"></a>
+<h1><a class="anchor" id="autotoc_md45"></a>
 Implications of Select Features</h1>
 <p >Inclusion of some specific features raise questions and concerns which must be addressed. In this section, we will discuss some of these, and outline the solutions. The features of concern are:</p><ul>
 <li>Pre-emptive multitasking</li>
@@ -53,56 +53,56 @@ Implications of Select Features</h1>
 <li>Dynamic task creation and deletion</li>
 <li>Signal channels and signaling</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md44"></a>
+<h2><a class="anchor" id="autotoc_md46"></a>
 Pre-emptive multitasking</h2>
-<h3><a class="anchor" id="autotoc_md45"></a>
+<h3><a class="anchor" id="autotoc_md47"></a>
 What is pre-emptive multitasking?</h3>
 <p >In a co-operative multitasking environment it is up to each task to yield control back to the kernel so that another task has the chance to run. In a pre-emptive environment the kernel forces control away from a task and lets another task run.</p>
 <p >To do this, Piccolo OS uses the Systick exception. In essence, a Systick exception is raised by the hardware when the Systick counter reaches zero. The Systick Control, Reload, and Status registers control how long it takes between exceptions, and if the exception is enabled or disabled. The Systick timer uses a 1μs clock.</p>
-<h3><a class="anchor" id="autotoc_md46"></a>
+<h3><a class="anchor" id="autotoc_md48"></a>
 How do we avoid breaking the rest of the Pico SDK system?</h3>
 <p >Truth be told, we <em>cannot</em> do a perfect job. The Pico SDK documentation specifically states that much of the standard C library is not "core safe". (They mean you cannot call it from multiple cores, but this would also apply to multiple tasks if preemption is allowed.) They do promise that <code>printf()</code> family and the <code>malloc(), calloc(), free()</code> family <em>are</em> core safe. They also advise users that the SDK provides mutexes which a user could use to gate library function use.</p>
 <p >The Piccolo OS files <code><a class="el" href="piccolo__os__lock__core_8c.html" title="Piccolo OS overrides for Pi Pico SDK lock_core defaults.">piccolo_os_lock_core.c</a></code> and <code><a class="el" href="piccolo__os__lock__core_8h.html" title="Piccolo OS overrides for Pi Pico SDK lock_core defaults.">piccolo_os_lock_core.h</a></code> integrate Piccolo OS with the SDK internals so that all of the SDK provided interlocking mechanisms such as mutexes and semaphores become <em>task safe</em> as well as core safe.</p>
 <ul>
 <li>NOTE: While <code>malloc()</code> and <code>free()</code> <em>are</em> task safe and protected from preemption on both cores, they are protected by mutexes and mutexes are <em>not</em> interrupt safe. Since the kernal <em>is</em> an interrupt handler, we cannot call <code>malloc()</code> or <code>free()</code> from within the kernal!</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md47"></a>
+<h3><a class="anchor" id="autotoc_md49"></a>
 Preempting Interrupt Service Routines</h3>
 <p >We should worry about Systick preempting interrupt service handlers and timer routines. The Pico SDK configures all external interrupt priorities to level 2. (The ARM Cortex M0 has four levels, with 0 being highest priority and 3 being lowest.) This means that the default Systick (and SVC) priorities (set to 0) will be higher than any IRQ's used by the SDK or the user. Doing a pre-emptive context switch during an Interrupt Service Routine would be a <b>disaster</b>! Since the user can also lower IRQ priorities further, we set the IRQ priorities for SVC and Systick to the lowest possible level.</p>
-<h3><a class="anchor" id="autotoc_md48"></a>
+<h3><a class="anchor" id="autotoc_md50"></a>
 Do we create any race conditions with two exceptions doing the same thing?</h3>
 <p >The exception handlers for Systick and SVC both go to the kernal. Does this create a problem? The short answer is yes! The timer can expire just before the SVC, or simultaneously. It can also expire while the scheduler is running (after the SVC)! We did at least make sure that neither exception will preempt the other when we set <em>both</em> their priorities to the lowest level.</p><ul>
 <li>If the Systick timer expires before the SVC instruction executes, then the task misses the boat and will skip a turn when it resumes and executes the SVC instruction. (So sad!)</li>
 <li>If both the SVC and Systick happen at the same time then SVC wins with a lower exception number and the Systick interrupt will be pending. This is the same as Systick expiring while the scheduler is running because of an SVC, and will be discussed below. (Note that <em>at the same time</em> here means that Systick fires during the execution of the SVC instruction.)</li>
 <li>The Systick timer can expire while the scheduler is running due to an SVC instruction. The scheduler is the exception handler and will not be preempted by the Systick interrupt because they are at the same priority level. But the Systick exception will be pending and will happen as soon as the scheduler switches to the next task! We can solve this by making sure that the scheduler specifically disables the Systick timer and then clears any pending Systick exceptions. The timer can then be restarted when the next task is run.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md49"></a>
+<h2><a class="anchor" id="autotoc_md51"></a>
 Multi-core operation</h2>
-<p >The primary concern with multi-core operation is to prevent both cores from trying to simultanously modify the same data. While we have made this possible for tasks and the SDK in the implementation of preemption, we need to take additional steps to protect the scheduler and and certain other task callable functions, since all can run on both cores.</p>
-<h3><a class="anchor" id="autotoc_md50"></a>
+<p >The primary concern with multi-core operation is to prevent both cores from trying to simultaneously modify the same data. While we have made this safe for tasks and the SDK in the implementation of preemption, we need to take additional steps to protect the scheduler and and certain other task callable functions, since all can run on both cores.</p>
+<h3><a class="anchor" id="autotoc_md52"></a>
 Protecting the scheduler</h3>
 <p >The scheduler's job is to cycle through all the tasks, looking for a task to run that is not blocked or running on the other core. While doing this it will check each blocked task and unblock it if possible. This search <em>cannot</em> happen on both cores simultaneously, because both of them might modify the blocking status of the same task, or even try to run the same one!</p>
 <p >In addition, task creation or deletion must modify the list of tasks which the scheduler might currently be using!</p>
 <p >The solution is to use one of the spinlocks from the SDK. Spinlocks are interrupt and multicore safe, so we can insure that the critical sections of the scheduler cannot run at the same time. We use the same lock to prevent task creation and deletion while the scheduler is running. Piccolo OS Plus uses one of the spinlocks already reserved by the SDK for operating system use.</p>
-<h3><a class="anchor" id="autotoc_md51"></a>
+<h3><a class="anchor" id="autotoc_md53"></a>
 Protecting the signal channels</h3>
 <p >The signal channel is only read by the task to which it is connected. By design, this is safe. But multiple senders are allowed to send signals to the same receiving task, so the sending mechanism must be protected since two senders could be running on seperate cores, or one could be preempted during sending. The solution is to again use a spinlock. (A spinlock is required, because we need interrupt protection since interrupt handlers are also allowed to send signals!) We currently use the same spinlock as the scheduler, though this is <em>not</em> required.</p>
-<h3><a class="anchor" id="autotoc_md52"></a>
+<h3><a class="anchor" id="autotoc_md54"></a>
 Getting the interface to the SDK right</h3>
 <p >A mentioned previously, we have integrated Piccolo OS Plus with the SDK synchronization mechanisms. We want to allow a task that was waiting for a lock in the SDK to yield to other tasks. For this purpose, it would be enough to just make sure the scheduler was running on the core that called the SDK. (Remember you can call the SDK routines before <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> is called.) But sometimes the SDK actually cares <em>who</em> owns the lock! So we must return the correct task ID no matter which core is running the task! The solution is to keep track of which task is running on each core, and lookup the task ID for that core when asked.</p>
-<h2><a class="anchor" id="autotoc_md53"></a>
+<h2><a class="anchor" id="autotoc_md55"></a>
 Dynamic task creation and deletion</h2>
 <p >The addition of dynamic task creation and deletion forced one major design change from <code>v1</code> and <code>v1.1</code>, and adds a few additional concerns.</p>
-<h3><a class="anchor" id="autotoc_md54"></a>
+<h3><a class="anchor" id="autotoc_md56"></a>
 A task in now a struct</h3>
 <p >In order to be dynamically added and deleted, tasks are now represented as a <code>struct</code>, and the simplicity of an array of tasks had to be discarded. The scheduler uses a doubly linked (meaning forward and backward linked) list of tasks. This facilitates easy removal of a task from anywhere in the list, and easy addition of a new task at the end of the list.</p>
-<h3><a class="anchor" id="autotoc_md55"></a>
+<h3><a class="anchor" id="autotoc_md57"></a>
 Protection of the structures</h3>
 <p >As mentioned before, in a multi-core and pre-emptive scheduling environment we must not allow task creation, deletion or scheduling to occur simultaneously, because the linked lists of task structures would be corrupted. Therefore, all of these operations use the same spinlock as discussed above.</p>
-<h3><a class="anchor" id="autotoc_md56"></a>
+<h3><a class="anchor" id="autotoc_md58"></a>
 Use of malloc() and free()</h3>
 <p >As discussed previously, <code>malloc()</code> and <code>free()</code> are task and core safe in Piccolo OS Plus, but <em>not</em> interrupt safe. The scheduler <em>is</em> an interrupt handler, so though it is responsible for removing tasks which have ended, <em>it cannot call <code>free()</code> to return the memory for the task struct</em>. Our solution is to let the scheduler place the discarded task onto another list (the "zombie" list of dead tasks) and allow a special garbage collector task to return the memory using <code>free()</code>. Of course, the zombie list has to be protected using the same scheduler spin lock as the task structures.</p>
-<h1><a class="anchor" id="autotoc_md57"></a>
+<h1><a class="anchor" id="autotoc_md59"></a>
 Implementation Discussions</h1>
 <p >Here we talk about some of the implementation details in more depth. Topics include:</p><ul>
 <li>Non-obvious members of the task structure <a class="el" href="group___intern.html#structpiccolo__os__task__t">piccolo_os_task_t</a> and the internals structure <a class="el" href="group___intern.html#structpiccolo__os__internals__t">piccolo_os_internals_t</a>.</li>
@@ -110,21 +110,21 @@ Implementation Discussions</h1>
 <li>The garbage collector</li>
 <li>The signal system design</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md60"></a>
 The task and internals structures</h2>
 <p >The function of most of the members of the task structure <a class="el" href="group___intern.html#structpiccolo__os__task__t" title="Piccolo OS task data structure.">piccolo_os_task_t</a> and the internals structure <a class="el" href="group___intern.html#structpiccolo__os__internals__t" title="Piccolo OS internal data structure.">piccolo_os_internals_t</a> are reasonably obvious from the descriptions in the documentation, but a few deserve more information.</p>
-<h3><a class="anchor" id="autotoc_md59"></a>
+<h3><a class="anchor" id="autotoc_md61"></a>
 The task data structure</h3>
 <ul>
-<li><code>task_flags</code> is a logical 'or' of the bit masks from the enum <a class="el" href="group___intern.html#ga7c6e357870874b0b46cca591cde1b9b7">piccolo_task_flag_values</a>. This is how tasks are marked as running or blocked. Note that a task can be marked blocked and for multiple reasons. For example, a task waiting for a signal with timeout is blocked for <em>two</em> reasons! Resolving <em>any reason</em> will allow the task to run. (And it is up to the task to sort things out.)</li>
+<li><code>task_flags</code> is a logical 'or' of the bit masks from the enum <a class="el" href="group___intern.html#ga7c6e357870874b0b46cca591cde1b9b7">piccolo_task_flag_values</a>. This is how tasks are marked as running or blocked. Note that a task can be marked blocked for multiple reasons. For example, a task waiting for a signal with timeout is blocked for <em>two</em> reasons! Resolving <em>any reason</em> will allow the task to run. (And it is up to the task to sort things out.)</li>
 <li><code>task_sending_to</code> is the target task if the current task is blocked trying to send a signal. The scheduler can then check the target task to see if there is now room in its signal channel so the current task can be unblocked.</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md60"></a>
+<h3><a class="anchor" id="autotoc_md62"></a>
 The internals data structure</h3>
 <ul>
 <li><code>this_task[]</code> is how the Pico SDK interface routines find out which task is running on the current core. It is maintained current by the scheduler on each core. The entries must be initialized to their core number (<code>this_task[i]=i</code>) before <code>piccoloc_start()</code> is called or core1 is started for any other reason. When <code>main()</code> is started, both entries are 0. This is OK because core1 is not running. Calling <code><a class="el" href="group___cinter.html#gadff28f28fb63a151704985aba1116319" title="Initialize the piccolo run time environment.">piccolo_init()</a></code> sets <code>this_task[1]=1</code>, completing the initialization.</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md61"></a>
+<h2><a class="anchor" id="autotoc_md63"></a>
 The scheduler in more detail</h2>
 <p >Here is where many of our concerns throughout are resolved. When <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> is called, it first does some final initialization only on core 0.</p><ul>
 <li>create the garbage collector task.</li>
@@ -154,7 +154,7 @@ The scheduler in more detail</h2>
 </li>
 <li>To run the task, start the Systick timer for preemption</li>
 <li>Switch context to run the task</li>
-<li>Resume when the task yields or is preempted, check if the task has ended and is marked as a zombie<ul>
+<li>Resume when the task yields or is preempted. Check if the task has ended and is marked as a zombie<ul>
 <li>if it is a zombie<ul>
 <li>lock the spinlock</li>
 <li>remove the task from the scheduler loop</li>
@@ -169,7 +169,7 @@ The scheduler in more detail</h2>
 </li>
 <li>return to the top of the main loop</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md62"></a>
+<h2><a class="anchor" id="autotoc_md64"></a>
 The Garbage Collector</h2>
 <p >The garbage collector task is simple, but it is critical that it does not miss any signals, and should free space as soon as possible. It sits in the following loop:</p><ul>
 <li>block waiting for all the signals available</li>
@@ -181,10 +181,10 @@ The Garbage Collector</h2>
 </ul>
 </li>
 </ul>
-<h2><a class="anchor" id="autotoc_md63"></a>
+<h2><a class="anchor" id="autotoc_md65"></a>
 Signals</h2>
-<p >Signal channels are based on an old technique called circular buffering which required no synchronization primatives at all for a data producer and consumer to cooperate. In our case, we remove the data buffer and let the position of the old buffer pointers convey the information. We will describe how this works, and then discuss how we have adapted it for multiple senders. </p>
-<h3><a class="anchor" id="autotoc_md64"></a>
+<p >Signal channels are based on an old technique called circular buffering which required no synchronization primitives at all for a data producer and consumer to cooperate. In our case, we remove the data buffer and let the position of the old buffer pointers convey the information. We will describe how this works, and then discuss how we have adapted it for multiple senders. </p>
+<h3><a class="anchor" id="autotoc_md66"></a>
 How signals work</h3>
 <p >A signal channel contains two counters <code>IN</code> and <code>OUT</code>, and a <code>LIMIT</code> value. The sender only changes the <code>IN</code> value, and the receiver only changes the <code>OUT</code> value. As long as there is only one sender and one receiver, this guarantees that we are already task and core safe. Because the channel has a finite size, we also have a <code>LIMIT</code> value. <code>IN</code> and <code>OUT</code> are always incremented modulo the <code>LIMIT</code>, so for the following discussion, please assume that <code>IN+1</code> and <code>OUT+1</code> means <code>(IN+1)%LIMIT</code> and <code>(OUT+1)%LIMIT</code> respectively. So here is how to receive and send:</p><ul>
 <li>To Receive a signal<ul>
@@ -198,27 +198,27 @@ How signals work</h3>
 </ul>
 </li>
 </ul>
-<h3><a class="anchor" id="autotoc_md65"></a>
+<h3><a class="anchor" id="autotoc_md67"></a>
 But we allow multiple senders!</h3>
 <p >Because we allow multiple senders, the signal sending routines use a spinlock to insure that the <code>OUT</code> pointer is always updated correctly. Currently they use the same spinlock as the scheduler, but this is <em>not</em> really required because the send routines and the scheduler do not actually modify any of the same variables.</p>
-<h1><a class="anchor" id="autotoc_md66"></a>
+<h1><a class="anchor" id="autotoc_md68"></a>
 Pitfalls - Beware a few things</h1>
-<p >Just a couple of tips to maybe save some grief </p>
-<h2><a class="anchor" id="autotoc_md67"></a>
+<p >Just a couple of tips to maybe save some grief! </p>
+<h2><a class="anchor" id="autotoc_md69"></a>
 Don't do this in interrupt service routines or timer callbacks</h2>
 <p >Here are a few things you shouldn't do in interrupt handlers or timer callback routines. Some are instantly fatal, others may actually work <em>sometimes</em> but be horribly hard to find when they go wrong. </p>
-<h3><a class="anchor" id="autotoc_md68"></a>
+<h3><a class="anchor" id="autotoc_md70"></a>
 Don't call piccolo_yield()</h3>
 <p >Yes, this one may seem obviously nonsensical to many, but there is another important reason. Remember that <code>piccolo_yield()</code> executes an <code>SVC</code> instruction. The ARM processors do what is called "priority escalation" if the interrupt caused by the <code>SVC</code> instruction cannot be serviced immediately. Priority escalation generates a <code>hard fault</code> exception. Since we have assigned the SVC interrupt the lowest priority, if an SVC is executed while handling another interrupt you <em>will</em> get a <code>hard fault</code>. This will crash the current core at a breakpoint in the SDK.</p>
-<h3><a class="anchor" id="autotoc_md69"></a>
+<h3><a class="anchor" id="autotoc_md71"></a>
 Don't call any method that blocks</h3>
 <p >Again, many will already see this as a bad idea, since it stops interrupt processing until you are somehow unblocked. But remember that the routines that block in Piccolo OS or the SDK (due to Piccolo OS integration) <b>will</b> call <code>piccolo_yield()</code>. That will be bad!</p>
-<h3><a class="anchor" id="autotoc_md70"></a>
+<h3><a class="anchor" id="autotoc_md72"></a>
 Don't call piccolo_create_task()</h3>
 <p >This one may not be so obvious. Creating a task calls <code>malloc()</code> to get space for the task structure, and <code>malloc()</code> is <em>not interrupt safe</em>! So this might work, even most of the time. But someday it will not. Create your task in initialization or in another task and send it a signal or use an SDK method like semaphores instead. (But don't block!)</p>
-<h1><a class="anchor" id="autotoc_md71"></a>
+<h1><a class="anchor" id="autotoc_md73"></a>
 About Core 1</h1>
-<p >You can configure Piccolo OS Plus to not use multi-core and then go ahead and use Core 1 as you please. All the SDK mechanisms and methods will be available. (Piccolo OS does not use the FIFOs, etc., and will NOT start core 1). All of the SDK sychronization mechanisms will also work between the cores. You can even send signals from core 1 to tasks running under Piccolo OS on core 0. Just remember to call <code>piccolo_init()</code> in <code><a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code> <b>before</b> you start core 1! Otherwise the SDK integration may break. </p>
+<p >You can configure Piccolo OS Plus to not use multi-core and then go ahead and use Core 1 as you please. All the SDK mechanisms and methods will be available. (Piccolo OS does not use the FIFOs, etc., and will NOT start core 1). All of the SDK synchronization mechanisms will also work between the cores. You can even send signals from core 1 to tasks running under Piccolo OS on core 0. Just remember to call <code>piccolo_init()</code> in <code><a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code> <b>before</b> you start core 1! Otherwise the SDK integration may break. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

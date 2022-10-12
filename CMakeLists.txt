@@ -14,7 +14,7 @@ include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
 
 project(
     piccolo_os_plus_demo
-    VERSION 1.01
+    VERSION 1.02
     DESCRIPTION "A demonstration of Piccolo OS Plus"
     LANGUAGES C CXX ASM)
 

@@ -53,92 +53,97 @@ $(function() {
 <li>Task signalling with optional blocking and timeouts on sending or receiving</li>
 <li><code><a class="el" href="group___cinter.html#ga43b213a0f8ffd5e3ab068e41486dd201" title="sleeps for a specified number of milliseconds">piccolo_sleep()</a></code> blocks rather than spinning until the timer expires</li>
 <li>An idle task which sleeps the processor to reduce power consumption</li>
-<li>Full integration with Pico SDK synchronization functionaliy like mutexes and semaphores. (Also present in v1.1)</li>
+<li>Full integration with Pico SDK synchronization functionality like mutexes and semaphores. (Also present in v1.1)</li>
 </ul>
 <p >While Piccolo OS Plus is still reasonably simple, the feature set expansion and complications of multi-core operation made it a bit too complex to be a simple teaching tool, so with Gary's permission and encouragement, it is presented here.</p>
 <p >You can see the full documentation online <a href="https://KStandiford.github.io/Piccolo_OS_Plus/">HERE</a>. After building the project you can also point your browser at <code>/docs/html/index.html</code> in the project directory.</p>
-<h2><a class="anchor" id="autotoc_md22"></a>
+<h2><a class="anchor" id="autotoc_md23"></a>
 One Caveat</h2>
 <p >The API for <code>picolo_sleep()</code> has been simplified so that it matches the API for <code>sleep_ms()</code> from the SDK.</p>
-<h1><a class="anchor" id="autotoc_md23"></a>
+<h1><a class="anchor" id="autotoc_md24"></a>
 Basic Concepts</h1>
 <p >A <em>task</em> (i.e. <em>user task</em>) is a function that is run by Piccolo OS in a round-robin fashion along with the other tasks. (For example, a function that flashes the onboard LED). Each task has its own stack, separate from all other tasks and the the kernal.</p>
-<p >The <em>kernel</em> (or <em>scheduler</em>) is <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> which is called by <code><a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code> and never returns. In the multi-core environment, the scheduler runs simultaously on <em>both</em> cores. Tasks are created during initialization (before <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> is called) or may be created by another task during its execution. The scheduler (or schedulers) picks the next task that can be run (in a round-robin fashion), and transfers control to that task at the precise point where it left off execution during its last "turn" to run. A task may cooperatively relinquish control to the scheduler when it needs to pause or reaches a convenient point or the scheduler may pre-emptively "seize" control if the task has used its allocated slice of computing time. At that point, the scheduler moves on to the next task available to run. The details of this process are described in the <code>Theory of Operation</code> and <a href="https://github.com/garyexplains/piccolo_os_v1.1/blob/main/README.md">Piccolo V1.1</a> tabs of the documentation.</p>
-<h1><a class="anchor" id="autotoc_md24"></a>
+<p >The <em>kernel</em> (or <em>scheduler</em>) is <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> which is called by <code><a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code> and never returns. In the multi-core environment, the scheduler runs simultaneously on <em>both</em> cores. Tasks are created during initialization (before <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> is called) or may be created by another task during its execution. The scheduler (or schedulers) picks the next task that can be run (in a round-robin fashion), and transfers control to that task at the precise point where it left off execution during its last "turn" to run. A task may cooperatively relinquish control to the scheduler when it needs to pause or reaches a convenient point or the scheduler may preemptively "seize" control if the task has used its allocated slice of computing time. At that point, the scheduler moves on to the next task available to run. The details of this process are described in the <code>Theory of Operation</code> and <a href="https://github.com/garyexplains/piccolo_os_v1.1/blob/main/README.md">Piccolo V1.1</a> tabs of the documentation.</p>
+<h1><a class="anchor" id="autotoc_md25"></a>
 Overview of Key New Features</h1>
-<h2><a class="anchor" id="autotoc_md25"></a>
-Pre-emptive Scheduling</h2>
-<p >Without pre-emptive scheduling (ie. Picollo OS v1), a task would continue to execute until it voluntarily yielded the processor back to the scheduler. A compute intensive (or uncooperative) task could keep the processor too long and delay other tasks too much. (Indeed, the task could keep the processor forever, preventing any other task from running.) For pre-emptive scheduling, the kernal sets a timer when it starts a task, and stops the task when the timer expires if the task fails to yield first. This improves "fairness" for all tasks and improves the system response time overall.</p>
 <h2><a class="anchor" id="autotoc_md26"></a>
-Multi-core Operation with an Idle Task</h2>
-<p >Running the kernal on both cores simply allows two tasks to execute simultanously, with each processor choosing the next task as soon as its current task yields or is preempted. A task may be executed on either core. (But not both at once!)</p>
-<p >The idle task allows the processor to actually sleep if there are no tasks which are ready to run. This reduces power consumption.</p>
+Pre-emptive Scheduling</h2>
+<p >Without pre-emptive scheduling (ie. Piccolo OS v1), a task would continue to execute until it voluntarily yielded the processor back to the scheduler. A compute intensive (or uncooperative) task could keep the processor too long and delay other tasks too much. (Indeed, the task could keep the processor forever, preventing any other task from running.) For pre-emptive scheduling, the kernal sets a timer when it starts a task, and stops the task when the timer expires if the task fails to yield first. This improves "fairness" for all tasks and improves the system response time overall.</p>
 <h2><a class="anchor" id="autotoc_md27"></a>
+Multi-core Operation with an Idle Task</h2>
+<p >Running the kernal on both cores simply allows two tasks to execute simultaneously, with each processor choosing the next task as soon as its current task yields or is preempted. A task may be executed on either core. (But not both at once!)</p>
+<p >The idle task allows the processor to actually sleep if there are no tasks which are ready to run. This reduces power consumption.</p>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Dynamic Task Creation and Deletion</h2>
 <p >Tasks can be created during initialization (<code>in <a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code>) or by another task at run time. There is no preset limit on the number of tasks (at least until there is no more free memory). A task which is no longer needed can execute a <code>return</code>, at which point it will be removed from the kernal's list of tasks and the memory it was using will be returned to the system. (There is actually a built in garbage collector task which frees the memory.)</p>
-<h2><a class="anchor" id="autotoc_md28"></a>
+<h2><a class="anchor" id="autotoc_md29"></a>
 Task Blocking Without Execution</h2>
 <p >Tasks which are not ready to execute (waiting or 'blocking') are marked specially in the scheduler's list. The scheduler checks whether the conditions the task is waiting for have occurred (for example, a sleep time is over), and unblocks and executes the task if so. This is faster than just running the task so it can check for itself, and allows the scheduler to detect idle time.</p>
-<h2><a class="anchor" id="autotoc_md29"></a>
+<h2><a class="anchor" id="autotoc_md30"></a>
 Signals</h2>
 <p >A signal is simply a notification to a task that some event of interest has occurred. (A signal contains no data, and occupies no memory.) Each task has its own input signal channel. A signal can be sent to a task by another task, an interrupt service handler, or a callback routine. A task can just check for a signal, or can block until one arrives. There are more details in the theory of operation section.</p>
 <p >The Pico SDK also provides similar functionality with semaphores. However, the Piccolo integration with the SDK requires actually running the task to check the semaphore which substantially increases the overhead while waiting and prevents the cores from sleeping.</p>
-<h1><a class="anchor" id="autotoc_md30"></a>
+<h1><a class="anchor" id="autotoc_md31"></a>
 Quick Start Guide</h1>
 <p >This is just a usage outline. Refer to the <code>Piccolo Plus APIs</code> tab for more details, and <code><a class="el" href="piccolo__os__demo_8c.html">piccolo_os_demo.c</a></code> for some examples.</p>
-<h2><a class="anchor" id="autotoc_md31"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 piccolo_init()</h2>
 <p >In <code><a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code> you should initialize the SDK and the hardware as you like. In particular, here is the place to call <code>stdio_init_all()</code>. Any of the SDK functions can also be called from within a task. The exact order is not critical, but before creating any tasks or starting the kernal, you must call <code><a class="el" href="group___cinter.html#gadff28f28fb63a151704985aba1116319" title="Initialize the piccolo run time environment.">piccolo_init()</a></code> in order to set up the Piccolo OS data structures.</p>
-<h2><a class="anchor" id="autotoc_md32"></a>
-piccolo_create_task()</h2>
-<p >Call <code><a class="el" href="group___cinter.html#ga7441ecb1f631f7840bb96962ca02b38d" title="Create a new task and initialize it&#39;s stack.">piccolo_create_task()</a></code> to create your initial set of tasks. (There should be at least one!). Again, other calls to the SDK can be intermixed however you like, as long as the <code>piccolo_task_create()</code> calls come after <code><a class="el" href="group___cinter.html#gadff28f28fb63a151704985aba1116319" title="Initialize the piccolo run time environment.">piccolo_init()</a></code> and before <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code>.</p>
 <h2><a class="anchor" id="autotoc_md33"></a>
+piccolo_create_task()</h2>
+<p >Call <code><a class="el" href="group___cinter.html#ga7441ecb1f631f7840bb96962ca02b38d" title="Create a new task and initialize its stack.">piccolo_create_task()</a></code> to create your initial set of tasks. (There should be at least one!). Again, other calls to the SDK can be intermixed however you like, as long as the <code>piccolo_task_create()</code> calls come after <code><a class="el" href="group___cinter.html#gadff28f28fb63a151704985aba1116319" title="Initialize the piccolo run time environment.">piccolo_init()</a></code> and before <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code>.</p>
+<h2><a class="anchor" id="autotoc_md34"></a>
 piccolo_start()</h2>
 <p >Call <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> last in <code><a class="el" href="piccolo__os__demo_8c.html#ae66f6b31b5ad750f1fe042a706a4e3d4">main()</a></code>. <code><a class="el" href="group___cinter.html#gaff3adf843eb50836e36f743db1dd8f01" title="Start the Piccolo Task scheduler.">piccolo_start()</a></code> completes the Piccolo_OS initialization, starts itself on core1 and begins scheduling and running tasks. It never returns.</p>
-<h2><a class="anchor" id="autotoc_md34"></a>
+<h2><a class="anchor" id="autotoc_md35"></a>
 Examples Within a Task</h2>
 <p ><code><a class="el" href="group___cinter.html#gacd03e3debf23fef0874b7eae00a19e00" title="Yields the processor to another task.">piccolo_yield()</a></code> is called from inside a task to voluntarily yield the processor to the next task.</p>
 <p ><code>piccolo_sleep(&lt;sleep time in ms&gt;)</code> puts the task to sleep. The scheduler will awaken it when the time expires.</p>
-<h1><a class="anchor" id="autotoc_md35"></a>
+<h1><a class="anchor" id="autotoc_md36"></a>
 Limitations</h1>
 <p >Many! Piccolo OS Plus is NOT intended to be a full scale RTOS. (After all, there is a perfectly good free one out there!) There are no device drivers per say. There are some parts of the C libraries that are not thread safe. But most of the SDK will work and C++ will also run just fine. See more details in the <code>Theory of Operation</code> tab in the documentation.</p>
-<h1><a class="anchor" id="autotoc_md36"></a>
+<h1><a class="anchor" id="autotoc_md37"></a>
 Build Instructions</h1>
-<p >Make sure you have the Pico C/C++ SDK installed and working on your machine. <a href="https://datasheets.raspberrypi.org/pico/getting-started-with-pico.pdf">Getting started with Raspberry Pi Pico is the best place to start.</a></p>
+<p >Make sure you have the Pico C/C++ SDK installed and working on your machine. <a href="https://datasheets.raspberrypi.org/pico/getting-started-with-pico.pdf">Getting started with Raspberry Pi Pico</a> is the best place to start.</p>
 <p >You need to have PICO_SDK_PATH defined, e.g. <code>export PICO_SDK_PATH=/home/pi/pico/pico-sdk/</code></p>
 <p >Clone the code from the repository. Run <code>cmake</code> and <code>make</code> in the usual way for your development environment.</p>
-<h1><a class="anchor" id="autotoc_md37"></a>
+<h1><a class="anchor" id="autotoc_md38"></a>
 Credits</h1>
 <p >Many thanks to <a href="https://github.com/garyexplains">Gary Sims</a> for his original inspiration and ongoing support. Excerpts from his documentation are also used here.</p>
 <p >Thanks also to <a href="https://github.com/BjornTheProgrammer">Bjorn</a> for his interest and encouragement.</p>
-<h1><a class="anchor" id="autotoc_md38"></a>
+<h1><a class="anchor" id="autotoc_md39"></a>
 Primary Copyrights</h1>
 <div class="fragment"><div class="line">Copyright (C) 2022 Keith Standiford </div>
 <div class="line">Copyright (C) 2021,2022 Gary Sims </div>
 <div class="line">All rights reserved.</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md39"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md40"></a>
 License - 3-Clause BSD License</h1>
 <p >Copyright (C) 2022, Keith Standiford <br  />
  Copyright (C) 2021, 2022 Gary Sims <br  />
  All rights reserved.</p>
 <p >SPDX short identifier: BSD-3-Clause</p>
-<h1><a class="anchor" id="autotoc_md40"></a>
+<h1><a class="anchor" id="autotoc_md41"></a>
 Additional Copyrights</h1>
 <p >Some portions of code, intentionally or unintentionally, may or may not be attributed to the following people: <br  />
  Copyright (C) 2017 Scott Nelson: CMCM - <a href="https://github.com/scttnlsn/cmcm">https://github.com/scttnlsn/cmcm</a> <br  />
  Copyright (C) 2015-2018 National Cheng Kung University, Taiwan: mini-arm-os - <a href="https://github.com/jserv/mini-arm-os">https://github.com/jserv/mini-arm-os</a> <br  />
  Copyright (C) 2014-2017 Chris Stones: Shovel OS - <a href="https://github.com/chris-stones/ShovelOS">https://github.com/chris-stones/ShovelOS</a> <br  />
 </p>
-<h1><a class="anchor" id="autotoc_md41"></a>
+<h1><a class="anchor" id="autotoc_md42"></a>
 Release Notes</h1>
-<h2><a class="anchor" id="autotoc_md42"></a>
+<h2><a class="anchor" id="autotoc_md43"></a>
 Version 1.01</h2>
 <ul>
 <li>Refactored the scheduler a bit to improve efficiency.</li>
 <li>Optimized the non-blocking <code><a class="el" href="group___cinter.html#gaecae447238e1041d7179460b2fc54e4f" title="Attempt to get a signal.">piccolo_get_signal()</a></code> function.</li>
 <li>The scheduler now will not sleep if any task is blocking to receive or send a signal. This improves response time at the expense of power consumption. This behavior can be disabled by setting PICCOLO_OS_NO_IDLE_FOR_SIGNALS to <code>false</code> in <code><a class="el" href="piccolo__os_8h.html" title="Piccolo OS Plus.">piccolo_os.h</a></code> for lower power consumption if rapid response time is not critical.</li>
 <li>Cleaned up the timing reports from <code>piccolo_os_demo</code>.</li>
-<li>Numerous small documentation fixes. </li>
+<li>Numerous small documentation fixes.</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md44"></a>
+Version 1.02</h2>
+<ul>
+<li>Fixed yet more typos in the documentation. </li>
 </ul>
 </div></div><!-- PageDoc -->
 </div><!-- contents -->
